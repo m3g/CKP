@@ -6,8 +6,6 @@
 
 using Printf
 
-plot()
-
 function md(tprod,ff :: ForceField)
 
   # Number o particles
