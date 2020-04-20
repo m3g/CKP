@@ -8,6 +8,7 @@ function md(input :: InputData)
 
   # Just to clear the code
   n = input.n
+  dt = input.dt
 
   # Initial point and data structures
   atoms, traj = initial(input)
@@ -16,6 +17,7 @@ function md(input :: InputData)
   # Vectors for velocities and forces
   v = similar(x)
   f = similar(x)
+  flast = similar(x)
 
   # Initial velocities are very small, to see thermalization
 
@@ -30,26 +32,26 @@ function md(input :: InputData)
     v[i,2] = v[i,2]*1e-5*sqrt(input.kavg_target/kavg)
   end
 
-  println(" Potential energy at initial point: ", potential(n,x))
+  println(" Potential energy at initial point: ", potential(n,x,input))
   println(" Kinetic energy at initial point: ", kinetic(n,v))
-  eini = potential(n,x) + kinetic(n,v)
+  eini = potential(n,x,input) + kinetic(n,v)
   kini = kinetic(n,v)
   println(" Total initial energy = ", eini)
 
-  # Save first point
-  nsave = 1
-  traj[nsave] = atoms
-  
-  force!(n,x,f)
+  force!(n,x,f,input)
   for i in 1:n
     flast[i,1] = f[i,1]
     flast[i,2] = f[i,2]
   end
 
   # Running simulation
+  println(" Running simulation: ")
   nsteps = input.nequil + input.nprod
-  isave = round(Int64,nsteps/input.nsave)
+  println(" Number of steps: ", nsteps)
+  isave = trunc(Int64,input.nprod/input.nsave)
+  println(" Saving trajectory at every ", isave, " steps.")
   time = 0.
+  nsave = 0
   for istep in 2:nsteps
 
     # Updating positions 
@@ -63,23 +65,27 @@ function md(input :: InputData)
       time = 0.
     end
     kstep = kinetic(n,v) 
-    ustep = potential(n,x)
+    ustep = potential(n,atoms,input)
     energy = kstep + ustep 
     kavg = kstep / n
 
     # Print data on screen
-    if istep%iprint == 0
+    if istep%input.iprint == 0
       if istep <= input.nequil
-        println(@printf(" EQUIL TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
+        println(@sprintf(" EQUIL TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
       else
-        println(@printf(" PROD TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
+        println(@sprintf(" PROD TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
       end
     end
    
     # Save trajectory point
-    if istep%isave == 0
+    if istep > input.nequil && (istep-input.nequil)%isave == 0
       nsave = nsave + 1
-      traj.atoms[nsave] = atoms
+      for i in 1:n
+        traj.atoms[nsave].x[i,1] = atoms.x[i,1]
+        traj.atoms[nsave].x[i,2] = atoms.x[i,2]
+        traj.atoms[nsave].status[i] = atoms.status[i]
+      end
       traj.potential[nsave] = ustep
       traj.kinetic[nsave] = kstep
       traj.total[nsave] = energy
@@ -96,7 +102,7 @@ function md(input :: InputData)
     if istep <= input.nequil
       vx = 0.
       vy = 0.
-      lambda = sqrt( 1 + (dt/tau)*(input.kavg_target/kavg-1) )
+      lambda = sqrt( 1 + (dt/input.tau)*(input.kavg_target/kavg-1) )
       for i in 1:n
         v[i,1] = v[i,1]*lambda
         v[i,2] = v[i,2]*lambda

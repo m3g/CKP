@@ -2,6 +2,8 @@
 # Create initial point and minimize
 #
 
+using Printf
+
 function initial(input :: InputData)
 
   # To clear out the code
@@ -33,7 +35,9 @@ function initial(input :: InputData)
 
   dx = 1.0
   fnorm = 1.0
+  istep = 0
   while fnorm > input.tol
+    istep = istep + 1
 
     # Compute gradient
 
@@ -66,9 +70,25 @@ function initial(input :: InputData)
     else
       dx = dx / 2.      
     end
+
+    if istep%input.iprint == 0
+      println(@sprintf(" MINIM: U = %12.5e G_norm = %12.5e", ustep, fnorm))
+    end
+
   end
 
   println("Energy after minimization: ", potential(n,x,input))   
+
+  # Contamining some individuals
+  ncont = max(n*input.f0,1)
+  nc = 0
+  while nc < ncont
+    i = trunc(Int64,n*rand())+1
+    if atoms.status[i] == 0
+      atoms.status[i] = 1
+      nc = nc + 1
+    end
+  end
 
   return atoms, traj
 

@@ -10,7 +10,7 @@ using Parameters
   # Simulation time
 
   dt :: Float64 = 0.05
-  nprod :: Int64 = 50000
+  nprod :: Int64 = 1000
 
   # Size of the box 
 
@@ -18,10 +18,7 @@ using Parameters
 
   # Printing properties
 
-  iprint :: Int64 = 1
-  iprintxyz :: Int64 = 10
-  printequil :: Bool = false
-  printvel :: Bool = false
+  iprint :: Int64 = 100
 
   # Save how many points of the trajectory:
 
@@ -34,8 +31,7 @@ using Parameters
   # Parameters of Berendsen bath
 
   tau :: Float64 = 50. 
-  nequil :: Float64 = 1000
-  kavg_target :: Float64 = 0.6
+  nequil :: Int64 = 500
 
   # Lennard-Jones parameters
 
@@ -44,7 +40,14 @@ using Parameters
 
   # Parameters of optimization method for initial point
 
-  tol :: Float64 = 1e-5
+  tol :: Float64 = 1e-2
+
+  # Fraction of initially contamined individuals
+  f0 = 0.01
+
+  # Cross-section and probability of contamination
+  xsec = 4.
+  pcont = 0.3
 
 end
 
