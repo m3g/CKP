@@ -48,6 +48,10 @@ using Parameters
   # Cross-section and probability of contamination
   xsec = 4.
   pcont = 0.3
+ 
+  # chance of dieing or getting immune (per step)
+  pdie = 0.0001
+  pimmune = 0.01
 
 end
 

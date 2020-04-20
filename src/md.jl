@@ -38,7 +38,7 @@ function md(input :: InputData)
   kini = kinetic(n,v)
   println(" Total initial energy = ", eini)
 
-  force!(n,x,f,input)
+  force!(n,atoms,f,input)
   for i in 1:n
     flast[i,1] = f[i,1]
     flast[i,2] = f[i,2]
@@ -52,25 +52,35 @@ function md(input :: InputData)
   println(" Saving trajectory at every ", isave, " steps.")
   time = 0.
   nsave = 0
-  for istep in 2:nsteps
+  for istep in 1:nsteps
 
     # Updating positions 
     for i in 1:n
+      if atoms.status[i] == 2
+        continue  
+      end
       x[i,1] = image(x[i,1] + v[i,1]*dt + 0.5*f[i,1]*(dt^2),input)
       x[i,2] = image(x[i,2] + v[i,2]*dt + 0.5*f[i,2]*(dt^2),input)
     end
 
     time = time + dt
+    # reset time
     if istep == input.nequil 
       time = 0.
     end
+
+    # compute energy at this point
     kstep = kinetic(n,v) 
-    ustep = potential(n,atoms,input)
+    if istep <= input.nequil
+      ustep = potential(n,x,input)
+    else
+      ustep = potential(n,atoms,input)
+    end
     energy = kstep + ustep 
     kavg = kstep / n
 
     # Print data on screen
-    if istep%input.iprint == 0
+    if istep%input.iprint-1 == 0
       if istep <= input.nequil
         println(@sprintf(" EQUIL TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
       else
@@ -79,7 +89,7 @@ function md(input :: InputData)
     end
    
     # Save trajectory point
-    if istep > input.nequil && (istep-input.nequil)%isave == 0
+    if istep > input.nequil && (istep-input.nequil-1)%isave == 0
       nsave = nsave + 1
       for i in 1:n
         traj.atoms[nsave].x[i,1] = atoms.x[i,1]
@@ -92,6 +102,31 @@ function md(input :: InputData)
       traj.time[nsave] = time
     end
  
+    # Some sick people may dye, and other people may get immune
+    if istep > input.nequil
+      for i in 1:n
+        if atoms.status[i] == 1
+          # die
+          if rand() < input.pdie
+            atoms.status[i] = 2
+          elseif rand() < input.pimmune
+          # get immunity
+            atoms.status[i] = 3
+          end # otherwise continue sick
+        end
+      end
+      ndead = 0
+      # Check who died
+      for i in 1:n
+        # if dead, put aside
+        if atoms.status[i] == 2
+          ndead = ndead + 1
+          x[i,1] = -48. + 0.4*ndead
+          x[i,2] = -48. 
+        end
+      end
+    end
+
     # Stop if simulation exploded
     if ustep > 1.e10
       println("STOP: Simulation exploded at step ", istep, " with energy = ", energy)
@@ -124,7 +159,7 @@ function md(input :: InputData)
       flast[i,1] = f[i,1]
       flast[i,2] = f[i,2]
     end
-    force!(n,x,f,input)
+    force!(n,atoms,f,input)
 
     # Updating velocities
     for i in 1:n
