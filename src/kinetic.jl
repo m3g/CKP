@@ -2,7 +2,7 @@
 # Function that computes the kinetic energy
 #
 
-function kinetic(n,v)
+function kinetic(n :: Int64, v :: Array{Float64})
 
   kinetic = 0.
   for i in 1:n

@@ -2,15 +2,25 @@
 # Create initial point and minimize
 #
 
-function initial!(n,x, ff :: ForceField)
+function initial(input :: InputData)
+
+  # To clear out the code
+  n = input.n
+
+  # Structures to save data
+  atoms = Atoms(n)
+  traj = Traj(n,input.nsave)
+
+  # Local names for code simplicity
+  x = atoms.x # this does not not copy x, so that is fine
 
   # Creating random initial coordinates
 
   i = 0
   while i < n
     i = i + 1
-    x[i,1] = -ff.side/2.0 + ff.side*rand()
-    x[i,2] = -ff.side/2.0 + ff.side*rand()
+    x[i,1] = -input.side/2.0 + input.side*rand()
+    x[i,2] = -input.side/2.0 + input.side*rand()
   end
 
   xtrial = similar(x)
@@ -18,16 +28,16 @@ function initial!(n,x, ff :: ForceField)
 
   # Minimizing the energy of the initial point
 
-  ulast = potential(n,x,ff)
+  ulast = potential(n,x,input)
   println("Energy before minimization: ", ulast)
 
   dx = 1.0
   fnorm = 1.0
-  while fnorm > 1.e-5  
+  while fnorm > input.tol
 
     # Compute gradient
 
-    force!(n,x,f,ff)
+    force!(n,x,f,input)
     fnorm = 0.
     for i in 1:n
       fnorm = fnorm + f[i,1]^2 + f[i,2]^2
@@ -39,10 +49,10 @@ function initial!(n,x, ff :: ForceField)
     for i in 1:n
       xtrial[i,1] = x[i,1] + f[i,1]*dx
       xtrial[i,2] = x[i,2] + f[i,2]*dx
-      xtrial[i,1] = image(xtrial[i,1],ff)
-      xtrial[i,2] = image(xtrial[i,2],ff)
+      xtrial[i,1] = image(xtrial[i,1],input)
+      xtrial[i,2] = image(xtrial[i,2],input)
     end
-    ustep = potential(n,xtrial,ff)
+    ustep = potential(n,xtrial,input)
 
     # If energy decreased, accept, if not, reject and decrease dx
 
@@ -58,7 +68,9 @@ function initial!(n,x, ff :: ForceField)
     end
   end
 
-  println("Energy after minimization: ", potential(n,x,ff))   
+  println("Energy after minimization: ", potential(n,x,input))   
+
+  return atoms, traj
 
 end
 
