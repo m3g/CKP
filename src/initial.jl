@@ -17,6 +17,7 @@ function initial(input :: InputData)
 
   # Local names for code simplicity
   x = atoms.x # this does not not copy x, so that is fine
+  uf! = input.uf!
 
   # Creating random initial coordinates
 
@@ -32,7 +33,7 @@ function initial(input :: InputData)
 
   # Minimizing the energy of the initial point
 
-  ulast = potential(n,x,input)
+  ulast = uf!(n,x,f,input)
   println("Energy before minimization: ", ulast)
 
   dx = 1.0
@@ -43,7 +44,7 @@ function initial(input :: InputData)
 
     # Compute gradient
 
-    force!(n,x,f,input)
+    u = uf!(n,x,f,input)
     fnorm = 0.
     for i in 1:n
       fnorm = fnorm + f[i,1]^2 + f[i,2]^2
@@ -58,7 +59,7 @@ function initial(input :: InputData)
       xtrial[i,1] = image(xtrial[i,1],input)
       xtrial[i,2] = image(xtrial[i,2],input)
     end
-    ustep = potential(n,xtrial,input)
+    ustep = uf!(n,xtrial,f,input)
 
     # If energy decreased, accept, if not, reject and decrease dx
 
@@ -79,7 +80,7 @@ function initial(input :: InputData)
 
   end
 
-  println("Energy after minimization: ", potential(n,x,input))   
+  println("Energy after minimization: ", ulast)   
 
   # Contamining some individuals
   ncont = max(n*input.f0,1)

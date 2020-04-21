@@ -11,6 +11,7 @@ function md(input :: InputData)
   # Just to clear out the code
   n = input.n
   dt = input.dt
+  uf! = input.uf!
 
   # Initial point and data structures
   atoms, traj = initial(input)
@@ -33,19 +34,78 @@ function md(input :: InputData)
     v[i,2] = v[i,2]*1e-5*sqrt(input.kavg_target/kavg)
   end
 
-  u = forces_and_energy_simple!(n,x,f,input)
+  # Forces and energy at initial point
+  u = uf!(n,x,f,input)
   kini = kinetic(n,v)
 
   println(" Potential energy at initial point: ", u)
   println(" Kinetic energy at initial point: ", kini)
   eini = u + kini
   println(" Total initial energy = ", eini)
-
   flast = copy(f)
 
+  #
+  # Equilibration
+  #
+  iequil = input.nequil
+  time = 0.
+  kavg20 = zeros(20)
+  istep = 0
+  while iequil != 0
+    istep = istep + 1
+    
+    # update time
+    time = time + dt
+
+    # update positions
+    update_positions!(atoms,f,v,input)
+
+    # compute forces and energy at this point
+    @. flast = f
+    kstep = kinetic(n,v) 
+    ustep = uf!(n,x,f,input)
+    energy = kstep + ustep 
+    kavg = kstep / n
+
+    # Stop if average kinetic energy of last 20 points is good enough
+    if input.nequil < 0 
+      if istep < 20
+        kavg20[istep] = kavg
+      else
+        kavg20[1:19] = kavg20[2:20]
+        kavg20[20] = kavg
+      end
+      kavg_last20 = sum(kav20/20)
+      if abs(kavg_last20-input.kavg_target) < input.kavg_tol
+        iequil = 0 
+        println(" Satisfactory equilibration achieved in last 20 steps: ",kavg_last20)
+      end
+    # Stop if number of steps of equilibration was achieved
+    else
+      iequil = iequil - 1 
+    end
+
+    # Stop if simulation exploded
+    if ustep > 1.e10
+      println("STOP: Simulation exploded at step ", istep, " with energy = ", energy)
+      return traj
+    end
+  
+    # Print data on screen
+    if istep%input.iprint-1 == 0
+      println(@sprintf(" EQUIL TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
+    end
+   
+    # Update velocities (using Berendsen rescaling)
+    update_velocities!(v,kavg,f,flast,input)
+
+  end
+
+  #
   # Running simulation
+  #
   println(" Running simulation: ")
-  nsteps = input.nequil + input.nprod
+  nsteps = input.nprod
   println(" Number of steps: ", nsteps)
   isave = trunc(Int64,input.nprod/input.nsave)
   println(" Saving trajectory at every ", isave, " steps.")
@@ -53,34 +113,16 @@ function md(input :: InputData)
   nsave = 0
   for istep in 1:nsteps
 
-    # Updating positions 
-    for i in 1:n
-      if atoms.status[i] == 2
-        continue  
-      end
-      x[i,1] = image(x[i,1] + v[i,1]*dt + 0.5*f[i,1]*(dt^2),input)
-      x[i,2] = image(x[i,2] + v[i,2]*dt + 0.5*f[i,2]*(dt^2),input)
-    end
-
+    # update time
     time = time + dt
-    # reset time
-    if istep == input.nequil 
-      time = 0.
-    end
+
+    # Updating positions 
+    update_positions!(atoms,f,v,input)
 
     # compute forces and energy at this point
+    @. flast = f
     kstep = kinetic(n,v) 
-
-    # Updating the force
-    for i in 1:n
-      flast[i,1] = f[i,1]
-      flast[i,2] = f[i,2]
-    end
-    if istep <= input.nequil
-      ustep = forces_and_energy_simple!(n,x,f,input)
-    else
-      ustep = forces_and_energy_simple!(n,atoms,f,input)
-    end
+    ustep = uf!(n,atoms,f,input)
     energy = kstep + ustep 
     kavg = kstep / n
 
@@ -92,15 +134,11 @@ function md(input :: InputData)
 
     # Print data on screen
     if istep%input.iprint-1 == 0
-      if istep <= input.nequil
-        println(@sprintf(" EQUIL TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
-      else
-        println(@sprintf(" PROD TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
-      end
+      println(@sprintf(" PROD TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
     end
    
     # Save trajectory point
-    if istep > input.nequil && (istep-input.nequil-1)%isave == 0
+    if (istep-1)%isave == 0
       nsave = nsave + 1
       for i in 1:n
         traj.atoms[nsave].x[i,1] = atoms.x[i,1]
@@ -138,33 +176,8 @@ function md(input :: InputData)
       end
     end
 
-    # Berendsen bath
-    if istep <= input.nequil
-      vx = 0.
-      vy = 0.
-      lambda = sqrt( 1 + (dt/input.tau)*(input.kavg_target/kavg-1) )
-println(istep," ",input.kavg_target," ",kavg)
-lambda = input.kavg_target/kavg
-      for i in 1:n
-        v[i,1] = v[i,1]*lambda
-        v[i,2] = v[i,2]*lambda
-        vx = vx + v[i,1]
-        vy = vy + v[i,2]
-      end
-      # Remove drift
-      vx = vx / n
-      vy = vy / n
-      for i in 1:n
-        v[i,1] = v[i,1] - vx
-        v[i,2] = v[i,2] - vy
-      end
-    end
-
-    # Updating velocities
-    for i in 1:n
-      v[i,1] = v[i,1] + 0.5*(f[i,1]+flast[i,1])*dt
-      v[i,2] = v[i,2] + 0.5*(f[i,2]+flast[i,2])*dt
-    end
+    # Update velocities (using Berendsen rescaling)
+    update_velocities!(v,kavg,f,flast,input)
 
   end
   return traj
