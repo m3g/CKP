@@ -66,6 +66,7 @@ function uf_LJ!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: InputD
 
   u = 0.
   @. f = 0.
+  nenc = 0
 
   for i in 1:n-1
     if atoms.status[i] == 2 
@@ -104,12 +105,15 @@ function uf_LJ!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: InputD
       f[j,1] = f[j,1] - fx
       f[j,2] = f[j,2] - fy
 
-      atoms.status[i], atoms.status[j] = update_status(atoms.status[i],atoms.status[j],r,input)
+      atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
+      if encounter
+        nenc = nenc + 1
+      end
 
     end
   end
 
-  return u
+  return u, nenc
 
 end
 

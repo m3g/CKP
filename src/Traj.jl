@@ -9,6 +9,7 @@ struct Traj
   kinetic :: Vector{Float64}
   total :: Vector{Float64}
   time :: Vector{Float64}
+  nenc :: Vector{Float64}
 end
 
 # Initialize from number of atoms and number of steps to be saved
@@ -21,6 +22,7 @@ function Traj(n :: Int64, nsave :: Int64)
               zeros(nsave), # kinetic 
               zeros(nsave), # total 
               zeros(nsave), # time 
+              zeros(nsave), # nenc
               )
   for i in 1:nsave
     traj.atoms[i] = Atoms(n)

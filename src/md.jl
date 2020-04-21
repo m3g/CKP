@@ -127,7 +127,7 @@ function md(input :: InputData)
     # compute forces and energy at this point
     @. flast = f
     kstep = kinetic(n,v) 
-    ustep = uf!(n,atoms,f,input)
+    ustep, nenc = uf!(n,atoms,f,input)
     energy = kstep + ustep 
     kavg = kstep / n
 
@@ -154,6 +154,7 @@ function md(input :: InputData)
       traj.kinetic[nsave] = kstep
       traj.total[nsave] = energy
       traj.time[nsave] = time
+      traj.nenc[nsave] = nenc / n
     end
  
     # Some sick people may dye, and other people may get immune

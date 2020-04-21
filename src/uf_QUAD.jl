@@ -53,6 +53,7 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Inpu
 
   @. f = 0.
   upartial = zeros(Float64,Threads.nthreads())
+  nenc_partial = zeros(Int64,Threads.nthreads()) 
 
   Threads.@threads for i in 1:n-1
     if atoms.status[i] == 2 
@@ -91,12 +92,15 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Inpu
 
       end
 
-      atoms.status[i], atoms.status[j] = update_status(atoms.status[i],atoms.status[j],r,input)
+      atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
+      if encounter
+        nenc_partial[Threads.threadid()] = nenc_partial[Threads.threadid()] + 1
+      end
 
     end
   end
 
-  return sum(upartial)
+  return sum(upartial), sum(nenc_partial)
 
 end
 
