@@ -92,9 +92,13 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Inpu
 
       end
 
+      println(1)
       atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
+      println(2," ",encounter)
       if encounter
+      println(3)
         nenc_partial[Threads.threadid()] = nenc_partial[Threads.threadid()] + 1
+      println(4)
       end
 
     end
