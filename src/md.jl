@@ -145,9 +145,6 @@ function md(input :: InputData)
     # Save trajectory point
     if (istep-1)%isave == 0
       nsave = nsave + 1
-if nsave > input.nsave
-  println(istep)
-end
       for i in 1:n
         traj.atoms[nsave].x[i,1] = atoms.x[i,1]
         traj.atoms[nsave].x[i,2] = atoms.x[i,2]
