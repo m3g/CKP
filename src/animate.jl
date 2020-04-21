@@ -49,13 +49,13 @@ function animate(traj :: Traj, input :: InputData, filename :: String;
     plot!(xlim=[0,traj.nsteps],ylim=[0,traj.n],subplot=2)
     plot!(xlabel="Time",ylabel="Number of individuals",subplot=2)
 
-    fontsize=10
+    fontsize=8
     annotate!(0.15*input.nsave,input.n-0.00*input.n,text("Susceptible: $(susc[i])",:left,fontsize,:serif,:blue),subplot=2)
     annotate!(0.15*input.nsave,input.n-0.05*input.n,text("Sick: $(sick[i])",:left,fontsize,:serif,:red),subplot=2)
     annotate!(0.15*input.nsave,input.n-0.10*input.n,text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
     annotate!(0.15*input.nsave,input.n-0.15*input.n,text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
-    annotate!(0.35*input.nsave,input.n-0.00*input.n,text("Temperature: $(input.kavg_target)",:left,fontsize,:serif,:black),subplot=2)
-    annotate!(0.35*input.nsave,input.n-0.05*input.n,text("Encounters per person: $(traj.nenc[i])",:left,fontsize,:serif,:black),subplot=2)
+    annotate!(0.95*input.nsave,input.n-0.00*input.n,text("Temperature: $(input.kavg_target)",:left,fontsize,:serif,:black),subplot=2)
+    annotate!(0.95*input.nsave,input.n-0.05*input.n,text("Encounters per person: $(traj.nenc[i])",:left,fontsize,:serif,:black),subplot=2)
   
     next!(p)
   end
