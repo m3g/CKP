@@ -3,9 +3,9 @@ using Printf
 using Plots
 using ProgressMeter
 
-#function animate(traj :: Traj, input :: InputData, filename :: String;
-#                 size = [800,400], fps :: Int64 = 10)
-function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10) 
+function animate(traj :: Traj, input :: InputData, filename :: String;
+                 size = [800,400], fps :: Int64 = 10)
+#function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10) 
 
   ENV["GKSwstype"]="nul"
 
