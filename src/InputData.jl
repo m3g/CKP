@@ -8,7 +8,7 @@ using Parameters
 
   # Simulation time
   dt :: Float64 = 0.05
-  nprod :: Int64 = 1000
+  nprod :: Int64 = 15000
 
   # Size of the box 
   side :: Float64 = 1000.
@@ -21,7 +21,7 @@ using Parameters
   nsave :: Int64 = 200
 
   # Temperature
-  kavg_target :: Float64 = 0.6
+  kavg_target :: Float64 = 5.
   kavg_tol :: Float64 = 1e-3
 
   # Parameters of Berendsen bath
@@ -44,7 +44,7 @@ using Parameters
  
   # chance of dieing or getting immune (per step)
   pdie = 0.0001
-  pimmune = 0.01
+  pimmune = 0.0005
 
   # Energy function
   #uf! = uf_LJ!
