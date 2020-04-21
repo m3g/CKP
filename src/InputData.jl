@@ -7,8 +7,8 @@ using Parameters
   n :: Int64 = 1000
 
   # Simulation time
-  dt :: Float64 = 0.05
-  nprod :: Int64 = 15000
+  dt :: Float64 = 0.1
+  nprod :: Int64 = 10000
 
   # Size of the box 
   side :: Float64 = 1000.
