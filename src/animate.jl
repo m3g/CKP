@@ -45,7 +45,7 @@ function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10, las
   
     plot(size=size,layout=(1,2),framestyle=:box,dpi=300)
   
-    plot!(xlabel=@sprintf("Time: %4i",i),subplot=1)
+    plot!(xlabel=@sprintf("Time: %4i",time[i]),subplot=1)
     scatter!(x,y,label="",color=c,xlim=lims,ylim=lims,subplot=1,markersize=2,xticks=:none,yticks=:none)
   
     #plot!(title=@sprintf("Tempo: %4i",i),subplot=2)
