@@ -17,6 +17,8 @@ module MD
   include("update_positions.jl")
   include("update_velocities.jl")
   include("md.jl")
+
+  include("animate.jl")
   
 end
 

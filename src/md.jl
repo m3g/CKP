@@ -8,6 +8,11 @@ Random.seed!(7654321)
 
 function md(input :: InputData)
 
+  # Check for input error
+  if input.nprod%input.nsave != 0
+    error("ERROR: nprod must be a multiple of nsave ")
+  end
+
   # Just to clear out the code
   n = input.n
   dt = input.dt
@@ -107,7 +112,7 @@ function md(input :: InputData)
   println(" Running simulation: ")
   nsteps = input.nprod
   println(" Number of steps: ", nsteps)
-  isave = trunc(Int64,input.nprod/input.nsave)
+  isave = round(Int64,input.nprod/input.nsave)
   println(" Saving trajectory at every ", isave, " steps.")
   time = 0.
   nsave = 0
@@ -140,6 +145,9 @@ function md(input :: InputData)
     # Save trajectory point
     if (istep-1)%isave == 0
       nsave = nsave + 1
+if nsave > input.nsave
+  println(istep)
+end
       for i in 1:n
         traj.atoms[nsave].x[i,1] = atoms.x[i,1]
         traj.atoms[nsave].x[i,2] = atoms.x[i,2]
@@ -170,8 +178,8 @@ function md(input :: InputData)
         # if dead, put aside
         if atoms.status[i] == 2
           ndead = ndead + 1
-          x[i,1] = -48. + 0.4*ndead
-          x[i,2] = -48. 
+          x[i,1] = -input.side/2. + 0.05*input.side/2 + (input.side/n)*ndead
+          x[i,2] = -input.side/2. + 0.05*input.side/2
         end
       end
     end
