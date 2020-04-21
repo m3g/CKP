@@ -17,7 +17,8 @@ trajectory = CKP.md()
 CKP.animate(trajectory,input,"animation.gif)
 ```
 
-## Simulate with a different average kinetic energy (change temperature, default is 5.):
+## Simulate with a different average kinetic energy 
+### Or change temperature (default is 5.):
 ```
 input = CKP.input(kavg_target=0.5)
 trajectory = CKP.md()
