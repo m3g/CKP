@@ -3,9 +3,11 @@ using Printf
 using Plots
 using ProgressMeter
 
-function animate(traj :: Traj, input :: InputData, filename :: String;
-                 size = [800,400], fps :: Int64 = 10)
-#function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10) 
+rectangle(w, h, x, y) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
+
+#function animate(traj :: Traj, input :: InputData, filename :: String;
+#                 size = [800,400], fps :: Int64 = 10)
+function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10)
 
   ENV["GKSwstype"]="nul"
 
@@ -18,6 +20,7 @@ function animate(traj :: Traj, input :: InputData, filename :: String;
   
   p = Progress(traj.nsteps,1)
   anim = @animate for i in 1:traj.nsteps
+  #anim = @animate for i in 1:5
   
     x = traj.atoms[i].x[:,1];
     y = traj.atoms[i].x[:,2];
@@ -49,13 +52,26 @@ function animate(traj :: Traj, input :: InputData, filename :: String;
     plot!(xlim=[0,traj.nsteps],ylim=[0,traj.n],subplot=2)
     plot!(xlabel="Time",ylabel="Number of individuals",subplot=2)
 
+    plot!(rectangle(70, # xlength
+                    215, #ylength
+                    0, #xmin
+                    810, #ymin
+                    ), opacity=0.7,label="",color=:white,subplot=2)
+    plot!(rectangle(90, # xlength
+                    115, #ylength
+                    110, #xmin
+                    910, #ymin
+                    ), opacity=0.7,label="",color=:white,subplot=2)
+
     fontsize=8
-    annotate!(0.15*input.nsave,input.n-0.00*input.n,text("Susceptible: $(susc[i])",:left,fontsize,:serif,:blue),subplot=2)
-    annotate!(0.15*input.nsave,input.n-0.05*input.n,text("Sick: $(sick[i])",:left,fontsize,:serif,:red),subplot=2)
-    annotate!(0.15*input.nsave,input.n-0.10*input.n,text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
-    annotate!(0.15*input.nsave,input.n-0.15*input.n,text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
+    annotate!(0.05*input.nsave,input.n-0.00*input.n,text("Susceptible: $(susc[i])",:left,fontsize,:serif,:blue),subplot=2)
+    annotate!(0.05*input.nsave,input.n-0.05*input.n,text("Sick: $(sick[i])",:left,fontsize,:serif,:red),subplot=2)
+    annotate!(0.05*input.nsave,input.n-0.10*input.n,text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
+    annotate!(0.05*input.nsave,input.n-0.15*input.n,text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
     annotate!(0.98*input.nsave,input.n-0.00*input.n,text("Temperature: $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
-    annotate!(0.98*input.nsave,input.n-0.05*input.n,text("Encounters per person: $(traj.nenc[i])",:right,fontsize,:serif,:black),subplot=2)
+    snenc = @sprintf("%5i",traj.nenc[i])
+    annotate!(0.98*input.nsave,input.n-0.05*input.n,text("Encounters per day: $snenc",:right,fontsize,:serif,:black),subplot=2)
+
   
     next!(p)
   end

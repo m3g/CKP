@@ -154,7 +154,7 @@ function md(input :: InputData)
       traj.kinetic[nsave] = kstep
       traj.total[nsave] = energy
       traj.time[nsave] = time
-      traj.nenc[nsave] = nenc / n
+      traj.nenc[nsave] = nenc
     end
  
     # Some sick people may dye, and other people may get immune
