@@ -3,8 +3,9 @@ using Printf
 using Plots
 using ProgressMeter
 
-function animate(traj :: Traj, input :: InputData, filename :: String;
-                 size = [800,400], fps :: Int64 = 10)
+#function animate(traj :: Traj, input :: InputData, filename :: String;
+#                 size = [800,400], fps :: Int64 = 10)
+function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10) 
 
   ENV["GKSwstype"]="nul"
 
@@ -54,7 +55,7 @@ function animate(traj :: Traj, input :: InputData, filename :: String;
     annotate!(0.15*input.nsave,input.n-0.10*input.n,text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
     annotate!(0.15*input.nsave,input.n-0.15*input.n,text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
     annotate!(0.35*input.nsave,input.n-0.00*input.n,text("Temperature: $(input.kavg_target)",:left,fontsize,:serif,:black),subplot=2)
-    annotate!(0.35*input.nsave,input.n-0.05*input.n,text("Encounters per person: $(nenc[i])",:left,fontsize,:serif,:black),subplot=2)
+    annotate!(0.35*input.nsave,input.n-0.05*input.n,text("Encounters per person: $(traj.nenc[i])",:left,fontsize,:serif,:black),subplot=2)
   
     next!(p)
   end
