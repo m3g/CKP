@@ -75,7 +75,7 @@ function md(input :: InputData)
         kavg20[1:19] = kavg20[2:20]
         kavg20[20] = kavg
       end
-      kavg_last20 = sum(kav20/20)
+      kavg_last20 = sum(kavg20)/20
       if abs(kavg_last20-input.kavg_target) < input.kavg_tol
         iequil = 0 
         println(" Satisfactory equilibration achieved in last 20 steps: ",kavg_last20)
