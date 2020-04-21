@@ -4,14 +4,14 @@ using Parameters
 @with_kw struct InputData
 
   # Number of particles
-  n :: Int64 = 100
+  n :: Int64 = 1000
 
   # Simulation time
   dt :: Float64 = 0.05
   nprod :: Int64 = 1000
 
   # Size of the box 
-  side :: Float64 = 100.
+  side :: Float64 = 1000.
   cutoff :: Float64 = 10.
 
   # Printing properties

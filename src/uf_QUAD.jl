@@ -6,10 +6,10 @@
 
 function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input :: InputData)
 
-  u = 0.
   @. f = 0.
+  upartial = zeros(Float64,Threads.nthreads())
 
-  for i in 1:n-1
+  Threads.@threads for i in 1:n-1
     for j in i+1:n
 
       xj = x[j,1] - x[i,1]
@@ -25,7 +25,7 @@ function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input ::
       
       if r < input.sig
 
-        u = u + input.eps*(input.sig-r)^2
+        upartial[Threads.threadid()] = upartial[Threads.threadid()] + input.eps*(input.sig-r)^2
       
         drdxi = -xj/r
         drdyi = -yj/r 
@@ -43,7 +43,7 @@ function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input ::
     end
   end
 
-  return u
+  return sum(upartial)
 
 end
 
@@ -51,10 +51,10 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Inpu
 
   x = atoms.x
 
-  u = 0.
   @. f = 0.
+  upartial = zeros(Float64,Threads.nthreads())
 
-  for i in 1:n-1
+  Threads.@threads for i in 1:n-1
     if atoms.status[i] == 2 
       continue
     end
@@ -76,7 +76,7 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Inpu
 
       if r < input.sig
 
-        u = u + input.eps*(input.sig-r)^2
+        upartial[Threads.threadid()] = upartial[Threads.threadid()] + input.eps*(input.sig-r)^2
       
         drdxi = -xj/r
         drdyi = -yj/r 
@@ -96,7 +96,7 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Inpu
     end
   end
 
-  return u
+  return sum(upartial)
 
 end
 

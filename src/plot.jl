@@ -9,8 +9,11 @@ sick = [ count( x -> x == 1, traj.atoms[j].status) for j in 1:traj.nsteps ]
 dead = [ count( x -> x == 2, traj.atoms[j].status) for j in 1:traj.nsteps ]
 immune = [ count( x -> x == 3, traj.atoms[j].status) for j in 1:traj.nsteps ]
 
+lims=[-input.side/2,input.side/2]
+
 p = Progress(traj.nsteps,1)
 anim = @animate for i in 1:traj.nsteps
+#anim = @animate for i in 1:5
 
   x = traj.atoms[i].x[:,1];
   y = traj.atoms[i].x[:,2];
@@ -21,7 +24,7 @@ anim = @animate for i in 1:traj.nsteps
     elseif traj.atoms[i].status[j] == 1
       c[j] = "red"
     elseif traj.atoms[i].status[j] == 2
-      c[j] = "black"
+      c[j] = "white"
     elseif traj.atoms[i].status[j] == 3
       c[j] = "green"
     end
@@ -29,17 +32,18 @@ anim = @animate for i in 1:traj.nsteps
 
   plot(size=(800,400),layout=(1,2),framestyle=:box)
 
-  plot!(title=@sprintf("Tempo: %4i",i),subplot=1)
-  scatter!(x,y,label="",color=c,xlim=[-50,50],ylim=[-50,50],subplot=1)
+  plot!(xlabel=@sprintf("Time: %4i",i),subplot=1)
+  scatter!(x,y,label="",color=c,xlim=lims,ylim=lims,subplot=1,markersize=2,xticks=:none,yticks=:none)
 
   time = collect(1:i)
 
-  plot!(title=@sprintf("Tempo: %4i",i),subplot=2)
+  #plot!(title=@sprintf("Tempo: %4i",i),subplot=2)
   plot!(time,sick[1:i],subplot=2,linewidth=2,label="Sick",color="red")
   plot!(time,healthy[1:i],subplot=2,linewidth=2,label="Healthy",color="blue")
   plot!(time,dead[1:i],subplot=2,linewidth=2,label="Dead",color="black")
   plot!(time,immune[1:i],subplot=2,linewidth=2,label="Immune",color="green")
   plot!(xlim=[0,traj.nsteps],ylim=[0,traj.n],subplot=2)
+  plot!(xlabel="Time",ylabel="Number of individuals",subplot=2)
 
   next!(p)
 end
