@@ -3,14 +3,17 @@
 #
 
 function update_status( s1 :: Int64, s2 :: Int64, d :: Float64, input :: InputData)
-   # Check contatmination
-   if  ( s1 == 1 || s2 == 1 ) && ( s1 < 3 && s2 < 3 ) # 3 nor 4 are dead and immune
-     # if the distance is smaller than the x-section
-     if d < input.xsec  
-       if rand() < input.pcont
-         return 1, 1, true
-       end
-     end
-   end
-   return s1, s2, false
+  # Check contatmination
+  if  ( s1 == 1 || s2 == 1 ) && ( s1 < 3 && s2 < 3 ) # 3 nor 4 are dead and immune
+    # if the distance is smaller than the x-section
+    if d < input.xsec  
+      if rand() < input.pcont
+        return 1, 1, true
+      else
+        return s1, s2, true
+      end
+    else
+      return s1, s2, false
+    end
+  end
 end
