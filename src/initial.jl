@@ -2,7 +2,9 @@
 # Create initial point and minimize
 #
 
+using Random
 using Printf
+Random.seed!(1234567)
 
 function initial(input :: InputData)
 

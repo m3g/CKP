@@ -19,6 +19,9 @@ function force!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input :: I
       yj = image(yj,input)
 
       r = sqrt(xj^2 + yj^2)
+      if r > input.cutoff  
+        continue
+      end
       
       drdxi = -xj/r
       drdyi = -yj/r 
@@ -61,6 +64,9 @@ function force!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: InputD
       yj = image(yj,input)
 
       r = sqrt(xj^2 + yj^2)
+      if r > input.cutoff
+        continue  
+      end
       
       drdxi = -xj/r
       drdyi = -yj/r 

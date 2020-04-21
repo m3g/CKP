@@ -15,6 +15,7 @@ using Parameters
   # Size of the box 
 
   side :: Float64 = 100.
+  cutoff :: Float64 = 10.
 
   # Printing properties
 

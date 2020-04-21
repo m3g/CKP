@@ -12,7 +12,9 @@ function potential(n :: Int64, x :: Array{Float64}, input :: InputData)
       xj = image(x[j,1] - x[i,1],input)
       yj = image(x[j,2] - x[i,2],input)
       d2 = r2(xj,yj)
-      potential = potential + upair(xj,yj,d2,input)
+      if d2 < input.cutoff^2
+        potential = potential + upair(xj,yj,d2,input)
+      end
     end
   end
   return potential
@@ -33,7 +35,9 @@ function potential(n :: Int64, atoms :: Atoms, input :: InputData)
       xj = image(x[j,1] - x[i,1],input)
       yj = image(x[j,2] - x[i,2],input)
       d2 = r2(xj,yj)
-      potential = potential + upair(xj,yj,d2,input)
+      if d2 < input.cutoff^2
+        potential = potential + upair(xj,yj,d2,input)
+      end
       # Check contatmination
       if  ( status[i] == 1 || status[j] == 1 ) &&
           ( status[i] < 3 && status[j] < 3 ) # 3 and 4 are dead and immune

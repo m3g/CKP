@@ -3,10 +3,12 @@
 #
 
 using Printf
+using Random
+Random.seed!(7654321)
 
 function md(input :: InputData)
 
-  # Just to clear the code
+  # Just to clear out the code
   n = input.n
   dt = input.dt
 
@@ -17,7 +19,6 @@ function md(input :: InputData)
   # Vectors for velocities and forces
   v = similar(x)
   f = similar(x)
-  flast = similar(x)
 
   # Initial velocities are very small, to see thermalization
 
@@ -32,17 +33,15 @@ function md(input :: InputData)
     v[i,2] = v[i,2]*1e-5*sqrt(input.kavg_target/kavg)
   end
 
-  println(" Potential energy at initial point: ", potential(n,x,input))
-  println(" Kinetic energy at initial point: ", kinetic(n,v))
-  eini = potential(n,x,input) + kinetic(n,v)
+  u = forces_and_energy_simple!(n,x,f,input)
   kini = kinetic(n,v)
+
+  println(" Potential energy at initial point: ", u)
+  println(" Kinetic energy at initial point: ", kini)
+  eini = u + kini
   println(" Total initial energy = ", eini)
 
-  force!(n,atoms,f,input)
-  for i in 1:n
-    flast[i,1] = f[i,1]
-    flast[i,2] = f[i,2]
-  end
+  flast = copy(f)
 
   # Running simulation
   println(" Running simulation: ")
@@ -69,15 +68,27 @@ function md(input :: InputData)
       time = 0.
     end
 
-    # compute energy at this point
+    # compute forces and energy at this point
     kstep = kinetic(n,v) 
+
+    # Updating the force
+    for i in 1:n
+      flast[i,1] = f[i,1]
+      flast[i,2] = f[i,2]
+    end
     if istep <= input.nequil
-      ustep = potential(n,x,input)
+      ustep = forces_and_energy_simple!(n,x,f,input)
     else
-      ustep = potential(n,atoms,input)
+      ustep = forces_and_energy_simple!(n,atoms,f,input)
     end
     energy = kstep + ustep 
     kavg = kstep / n
+
+    # Stop if simulation exploded
+    if ustep > 1.e10
+      println("STOP: Simulation exploded at step ", istep, " with energy = ", energy)
+      return traj
+    end
 
     # Print data on screen
     if istep%input.iprint-1 == 0
@@ -127,24 +138,19 @@ function md(input :: InputData)
       end
     end
 
-    # Stop if simulation exploded
-    if ustep > 1.e10
-      println("STOP: Simulation exploded at step ", istep, " with energy = ", energy)
-      return traj
-    end
-
     # Berendsen bath
     if istep <= input.nequil
       vx = 0.
       vy = 0.
       lambda = sqrt( 1 + (dt/input.tau)*(input.kavg_target/kavg-1) )
+println(istep," ",input.kavg_target," ",kavg)
+lambda = input.kavg_target/kavg
       for i in 1:n
         v[i,1] = v[i,1]*lambda
         v[i,2] = v[i,2]*lambda
         vx = vx + v[i,1]
         vy = vy + v[i,2]
       end
-
       # Remove drift
       vx = vx / n
       vy = vy / n
@@ -154,18 +160,12 @@ function md(input :: InputData)
       end
     end
 
-    # Updating the force
-    for i in 1:n
-      flast[i,1] = f[i,1]
-      flast[i,2] = f[i,2]
-    end
-    force!(n,atoms,f,input)
-
     # Updating velocities
     for i in 1:n
       v[i,1] = v[i,1] + 0.5*(f[i,1]+flast[i,1])*dt
       v[i,2] = v[i,2] + 0.5*(f[i,2]+flast[i,2])*dt
     end
+
   end
   return traj
 

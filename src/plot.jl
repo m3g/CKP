@@ -9,6 +9,7 @@ sick = [ count( x -> x == 1, traj.atoms[j].status) for j in 1:traj.nsteps ]
 dead = [ count( x -> x == 2, traj.atoms[j].status) for j in 1:traj.nsteps ]
 immune = [ count( x -> x == 3, traj.atoms[j].status) for j in 1:traj.nsteps ]
 
+p = Progress(traj.nsteps,1)
 anim = @animate for i in 1:traj.nsteps
 
   x = traj.atoms[i].x[:,1];
@@ -40,6 +41,7 @@ anim = @animate for i in 1:traj.nsteps
   plot!(time,immune[1:i],subplot=2,linewidth=2,label="Immune",color="green")
   plot!(xlim=[0,traj.nsteps],ylim=[0,traj.n],subplot=2)
 
+  next!(p)
 end
 
 gif(anim, "animation.gif", fps = 10)
