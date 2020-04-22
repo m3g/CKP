@@ -1,4 +1,3 @@
-
 using Printf
 using Plots
 using ProgressMeter
@@ -13,6 +12,7 @@ function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10, las
   sick = [ count( x -> x == 1, traj.atoms[j].status) for j in 1:traj.nsteps ]
   dead = [ count( x -> x == 2, traj.atoms[j].status) for j in 1:traj.nsteps ]
   immune = [ count( x -> x == 3, traj.atoms[j].status) for j in 1:traj.nsteps ]
+  snenc = @sprintf("%5.2f",sum(traj.nenc)/traj.nsteps)
 
   if last < 1
     last = traj.nsteps
@@ -72,8 +72,7 @@ function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10, las
     annotate!(0.05*xmax,input.n-0.05*input.n,text("Sick: $(sick[i])",:left,fontsize,:serif,:red),subplot=2)
     annotate!(0.05*xmax,input.n-0.10*input.n,text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
     annotate!(0.05*xmax,input.n-0.15*input.n,text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
-    annotate!(0.98*xmax,input.n-0.00*input.n,text("Temperature: $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
-    snenc = @sprintf("%5i",traj.nenc[i])
+    annotate!(0.98*xmax,input.n-0.00*input.n,text("\"Temperature\": $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
     annotate!(0.98*xmax,input.n-0.05*input.n,text("Encounters per day: $snenc",:right,fontsize,:serif,:black),subplot=2)
 
     next!(p)
