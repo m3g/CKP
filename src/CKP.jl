@@ -1,5 +1,5 @@
 
-module MD
+module CKP
 
   include("InputData.jl")
   include("Atoms.jl")
