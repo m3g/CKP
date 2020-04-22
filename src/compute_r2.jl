@@ -1,6 +1,6 @@
 # Function that computes the squared distance between two atoms
 
-function compute_r2(i,j,x,input)
+function compute_r2(xi,xj,input)
   xj = x[j,1] - x[i,1]
   yj = x[j,2] - x[i,2]
   xj = image(xj,input)

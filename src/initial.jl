@@ -20,7 +20,6 @@ function initial(input :: InputData)
   uf! = input.uf!
 
   # Creating random initial coordinates
-
   i = 0
   while i < n
     i = i + 1

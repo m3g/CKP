@@ -16,14 +16,11 @@ function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: InputDa
   Threads.@threads for i in 1:n-1
     it = Threads.threadid()
     for j in i+1:n
-      xi = image(x[j,1] - x[i,1],input)
-      xj = image(x[j,2] - x[i,2],input)
-      r2 = xi^2 + xj^2
-      if r2 > input.sig^2 || r2 > input.cutoff^2
+      r2 = compute_r2(i,j,x,input)
+      if r2 > input.cutoff^2
         continue
       end
-      r = sqrt(r2)
-      compute_uf_partials_QUAD!(it,f,i,j,xi,xj,r,input)
+      compute_uf_partials_LJ!(it,f,x,i,j,r2,input)
     end
   end
 
@@ -55,14 +52,12 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Forces, input :: InputData)
         continue
       end
 
-      xi = image(x[j,1] - x[i,1],input)
-      xj = image(x[j,2] - x[i,2],input)
-      r2 = xi^2 + xj^2
-      if r2 > input.sig^2 || r2 > input.cutoff^2
+      r2 = compute_r2(i,j,x,input)
+      if r2 > input.cutoff^2
         continue  
       end
       r = sqrt(r2)
-      compute_uf_partials_QUAD!(it,f,i,j,xi,xj,r,input)
+      compute_uf_partials_LJ!(it,f,x,i,j,r,input)
 
       atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
       if encounter

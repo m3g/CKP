@@ -1,13 +1,14 @@
 # Function that updates partial force and energy vectors, used for parallel computation
 
-function compute_uf_partials_QUAD!(it :: Int64, f :: Forces, x :: Array{Float64},
-                                   i :: Int64, j :: Int64, r :: Float64,
+function compute_uf_partials_QUAD!(it :: Int64, f :: Forces, 
+                                   i :: Int64, j :: Int64,
+                                   xi :: Float64, xj :: Float64, r :: Float64,
                                    input :: InputData)
 
    f.upartial[it] = f.upartial[it] + input.eps*(input.sig-r)^2
    
-   drdxi = -(x[j,1] - x[i,1])/r
-   drdyi = -(x[j,2] - x[i,2])/r 
+   drdxi = -xi/r
+   drdyi = -xj/r 
 
    fx = 2*input.eps*(input.sig-r)*drdxi
    fy = 2*input.eps*(input.sig-r)*drdyi

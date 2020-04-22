@@ -24,30 +24,27 @@ function md(input :: InputData)
 
   # Vectors for velocities and forces
   v = similar(x)
-  f = Forces(n)
+  forces = Forces(n)
+  f = forces.f
 
   # Initial velocities are very small, to see thermalization
-
   for i in 1:n
-    v[i,1] = -1. + 2*rand()
-    v[i,2] = -1. + 2*rand()
+    v[i,1] = normal(sqrt(input.kavg_target),input.kavg_target)
+    v[i,2] = normal(sqrt(input.kavg_target),input.kavg_target) 
   end
   kstep = kinetic(n,v)
   kavg = kstep / n
-  for i in 1:n
-    v[i,1] = v[i,1]*1e-5*sqrt(input.kavg_target/kavg)
-    v[i,2] = v[i,2]*1e-5*sqrt(input.kavg_target/kavg)
-  end
+  println(" kavg at initial point: ", kavg)
 
   # Forces and energy at initial point
-  u = uf!(n,x,f,input)
+  u = uf!(n,x,forces,input)
   kini = kinetic(n,v)
 
   println(" Potential energy at initial point: ", u)
   println(" Kinetic energy at initial point: ", kini)
   eini = u + kini
   println(" Total initial energy = ", eini)
-  flast = copy(f.f)
+  flast = copy(f)
 
   #
   # Equilibration
@@ -63,12 +60,12 @@ function md(input :: InputData)
     time = time + dt
 
     # update positions
-    update_positions!(atoms,f.f,v,input)
+    update_positions!(atoms,f,v,input)
 
     # compute forces and energy at this point
-    @. flast = f.f
+    @. flast = f
     kstep = kinetic(n,v) 
-    ustep = uf!(n,x,f,input)
+    ustep = uf!(n,x,forces,input)
     energy = kstep + ustep 
     kavg = kstep / n
 
@@ -102,7 +99,7 @@ function md(input :: InputData)
     end
    
     # Update velocities (using Berendsen rescaling)
-    update_velocities!(v,kavg,f.f,flast,input)
+    update_velocities!(v,kavg,f,flast,input)
 
   end
 
@@ -122,12 +119,12 @@ function md(input :: InputData)
     time = time + dt
 
     # Updating positions 
-    update_positions!(atoms,f.f,v,input)
+    update_positions!(atoms,f,v,input)
 
     # compute forces and energy at this point
-    @. flast = f.f
+    @. flast = f
     kstep = kinetic(n,v) 
-    ustep, nenc = uf!(n,atoms,f,input)
+    ustep, nenc = uf!(n,atoms,forces,input)
     energy = kstep + ustep 
     kavg = kstep / n
 
@@ -183,7 +180,7 @@ function md(input :: InputData)
     end
 
     # Update velocities (using Berendsen rescaling)
-    update_velocities!(v,kavg,f.f,flast,input)
+    update_velocities!(v,kavg,f,flast,input)
 
   end
   return traj
