@@ -4,60 +4,45 @@
 #
 # modifies vector f, returns u
 
-function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input :: InputData)
+#
+# Version that receives the coordinates of the atoms only, used in equilibration
+# -> does not update contaminations or count encounters
+#
 
-  @. f = 0.
-  upartial = zeros(Float64,Threads.nthreads())
+function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: InputData)
+
+  nt = Threads.nthreads()
+  resetForces!(f)
 
   Threads.@threads for i in 1:n-1
-
+    it = Threads.threadid()
     for j in i+1:n
-
-      xj = x[j,1] - x[i,1]
-      yj = x[j,2] - x[i,2]
-      xj = image(xj,input)
-      yj = image(yj,input)
-
-      r2 = xj^2 + yj^2
-      if r2 > input.cutoff^2
+      r2 = compute_r2(i,j,x,input)
+      if r2 > input.sig^2 || r2 > input.cutoff^2
         continue
       end
       r = sqrt(r2)
-      
-      if r < input.sig
-
-        upartial[Threads.threadid()] = upartial[Threads.threadid()] + input.eps*(input.sig-r)^2
-      
-        drdxi = -xj/r
-        drdyi = -yj/r 
-
-        fx = 2*input.eps*(input.sig-r)*drdxi
-        fy = 2*input.eps*(input.sig-r)*drdyi
-
-        f[i,1] = f[i,1] + fx
-        f[i,2] = f[i,2] + fy 
-        f[j,1] = f[j,1] - fx
-        f[j,2] = f[j,2] - fy
-
-      end
-
+      compute_uf_partials_QUAD!(it,f,i,j,r,input)
     end
-
   end
 
-  return sum(upartial)
+  u = reduceForces(f)
+  return u
 
 end
 
-function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: InputData)
+#
+# Version that receives the Atoms structure, to compute the number of encounters
+# -> used in the production simulation, to compute the contamination
+#
+
+function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Forces, input :: InputData)
 
   x = atoms.x
-
-  @. f = 0.
-  upartial = zeros(Float64,Threads.nthreads())
-  nenc_partial = zeros(Int64,Threads.nthreads()) 
+  resetForces!(f)
 
   Threads.@threads for i in 1:n-1
+    it = Threads.threadid()
 
     if atoms.status[i] == 2 
       continue
@@ -69,44 +54,24 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Inpu
         continue
       end
 
-      xj = x[j,1] - x[i,1]
-      yj = x[j,2] - x[i,2]
-      xj = image(xj,input)
-      yj = image(yj,input)
-
-      r2 = xj^2 + yj^2
-      if r2 > input.cutoff^2
+      r2 = compute_r2(i,j,x,input)
+      if r2 > input.sig^2 || r2 > input.cutoff^2
         continue  
       end
       r = sqrt(r2)
-
-      if r < input.sig
-
-        upartial[Threads.threadid()] = upartial[Threads.threadid()] + input.eps*(input.sig-r)^2
-      
-        drdxi = -xj/r
-        drdyi = -yj/r 
-
-        fx = 2*input.eps*(input.sig-r)*drdxi
-        fy = 2*input.eps*(input.sig-r)*drdyi
-
-        f[i,1] = f[i,1] + fx
-        f[i,2] = f[i,2] + fy 
-        f[j,1] = f[j,1] - fx
-        f[j,2] = f[j,2] - fy
-
-      end
+      compute_uf_partials_QUAD!(it,f,i,j,r,input)
 
       atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
       if encounter
-        nenc_partial[Threads.threadid()] = nenc_partial[Threads.threadid()] + 1
+        nenc_partial[it] = nenc_partial[it] + 1
       end
 
     end
 
   end
 
-  return sum(upartial), sum(nenc_partial)
+  u = reduceForces(f)
+  return u, sum(nenc_partial)
 
 end
 

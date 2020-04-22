@@ -24,7 +24,7 @@ function md(input :: InputData)
 
   # Vectors for velocities and forces
   v = similar(x)
-  f = similar(x)
+  f = Forces(n)
 
   # Initial velocities are very small, to see thermalization
 

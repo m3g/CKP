@@ -29,7 +29,7 @@ function initial(input :: InputData)
   end
 
   xtrial = similar(x)
-  f = similar(x)
+  f = Forces(n)
 
   # Minimizing the energy of the initial point
 
