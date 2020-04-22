@@ -2,9 +2,9 @@
 
 function reduceForces!(f :: Forces)
   u = 0.
-  for i in 1:nt
-    u = u + upartial[i]
-    @. f = f + fpartial[i]
+  for i in 1:Threads.nthreads()
+    u = u + f.upartial[i]
+    @. f.f = f.f + f.fpartial[i]
   end
   return u
 end

@@ -11,7 +11,6 @@
 
 function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: InputData)
 
-  nt = Threads.nthreads()
   resetForces!(f)
 
   Threads.@threads for i in 1:n-1
@@ -22,11 +21,11 @@ function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: InputDa
         continue
       end
       r = sqrt(r2)
-      compute_uf_partials_QUAD!(it,f,i,j,r,input)
+      compute_uf_partials_QUAD!(it,f,x,i,j,r,input)
     end
   end
 
-  u = reduceForces(f)
+  u = reduceForces!(f)
   return u
 
 end
@@ -59,19 +58,19 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Forces, input :: InputData)
         continue  
       end
       r = sqrt(r2)
-      compute_uf_partials_QUAD!(it,f,i,j,r,input)
+      compute_uf_partials_QUAD!(it,f,x,i,j,r,input)
 
       atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
       if encounter
-        nenc_partial[it] = nenc_partial[it] + 1
+        f.nenc_partial[it] = f.nenc_partial[it] + 1
       end
 
     end
 
   end
 
-  u = reduceForces(f)
-  return u, sum(nenc_partial)
+  u = reduceForces!(f)
+  return u, sum(f.nenc_partial)
 
 end
 

@@ -29,11 +29,12 @@ function initial(input :: InputData)
   end
 
   xtrial = similar(x)
-  f = Forces(n)
+  forces = Forces(n)
+  f = forces.f
 
   # Minimizing the energy of the initial point
 
-  ulast = uf!(n,x,f,input)
+  ulast = uf!(n,x,forces,input)
   println("Energy before minimization: ", ulast)
 
   dx = 1.0
@@ -44,7 +45,7 @@ function initial(input :: InputData)
 
     # Compute gradient
 
-    u = uf!(n,x,f,input)
+    u = uf!(n,x,forces,input)
     fnorm = 0.
     for i in 1:n
       fnorm = fnorm + f[i,1]^2 + f[i,2]^2
@@ -59,7 +60,7 @@ function initial(input :: InputData)
       xtrial[i,1] = image(xtrial[i,1],input)
       xtrial[i,2] = image(xtrial[i,2],input)
     end
-    ustep = uf!(n,xtrial,f,input)
+    ustep = uf!(n,xtrial,forces,input)
 
     # If energy decreased, accept, if not, reject and decrease dx
 

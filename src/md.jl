@@ -47,7 +47,7 @@ function md(input :: InputData)
   println(" Kinetic energy at initial point: ", kini)
   eini = u + kini
   println(" Total initial energy = ", eini)
-  flast = copy(f)
+  flast = copy(f.f)
 
   #
   # Equilibration
@@ -63,10 +63,10 @@ function md(input :: InputData)
     time = time + dt
 
     # update positions
-    update_positions!(atoms,f,v,input)
+    update_positions!(atoms,f.f,v,input)
 
     # compute forces and energy at this point
-    @. flast = f
+    @. flast = f.f
     kstep = kinetic(n,v) 
     ustep = uf!(n,x,f,input)
     energy = kstep + ustep 
@@ -102,7 +102,7 @@ function md(input :: InputData)
     end
    
     # Update velocities (using Berendsen rescaling)
-    update_velocities!(v,kavg,f,flast,input)
+    update_velocities!(v,kavg,f.f,flast,input)
 
   end
 
@@ -122,10 +122,10 @@ function md(input :: InputData)
     time = time + dt
 
     # Updating positions 
-    update_positions!(atoms,f,v,input)
+    update_positions!(atoms,f.f,v,input)
 
     # compute forces and energy at this point
-    @. flast = f
+    @. flast = f.f
     kstep = kinetic(n,v) 
     ustep, nenc = uf!(n,atoms,f,input)
     energy = kstep + ustep 
@@ -183,7 +183,7 @@ function md(input :: InputData)
     end
 
     # Update velocities (using Berendsen rescaling)
-    update_velocities!(v,kavg,f,flast,input)
+    update_velocities!(v,kavg,f.f,flast,input)
 
   end
   return traj
