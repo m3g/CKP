@@ -5,7 +5,7 @@ using ProgressMeter
 
 rectangle(w, h, x, y) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
 
-function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10, last=0)
+function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10, last=0, dpi=150)
 
   ENV["GKSwstype"]="nul"
 
@@ -43,7 +43,7 @@ function animate(traj, input, filename; size = [800,400], fps :: Int64 = 10, las
       end
     end
   
-    plot(size=size,layout=(1,2),framestyle=:box,dpi=300)
+    plot(size=size,layout=(1,2),framestyle=:box,dpi=dpi)
   
     plot!(xlabel=@sprintf("Time: %4i",time[i]),subplot=1)
     scatter!(x,y,label="",color=c,xlim=lims,ylim=lims,subplot=1,markersize=2,xticks=:none,yticks=:none)
