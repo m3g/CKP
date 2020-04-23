@@ -1,7 +1,7 @@
 
 module CKP
 
-  include("InputData.jl")
+  include("Input.jl")
   include("Atoms.jl")
   include("Traj.jl")
   include("Forces.jl")

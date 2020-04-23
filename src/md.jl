@@ -6,7 +6,7 @@ using Printf
 using Random
 Random.seed!(7654321)
 
-function md(input :: InputData)
+function md(input :: Input)
 
   # Check for input error
   if input.nprod%input.nsave != 0

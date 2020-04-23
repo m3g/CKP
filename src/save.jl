@@ -2,23 +2,29 @@ using StructTypes
 using JSON3
 
 struct SaveData
-  input :: InputData
+  input :: Input
   traj :: Traj
 end
 
-StructTypes.StructType(::Type{InputData}) = StructTypes.Struct()
+StructTypes.StructType(::Type{Input}) = StructTypes.Struct()
 StructTypes.StructType(::Type{Traj}) = StructTypes.Struct()
 StructTypes.StructType(::Type{SaveData}) = StructTypes.Struct()
 StructTypes.StructType(::Type{Atoms}) = StructTypes.Struct()
 
-function save_sim(input :: InputData, traj :: Traj, filename :: String)
+function write(input :: Input, traj :: Traj, filename :: String)
   S = SaveData(input,traj)
   f = open(filename,"w")
   JSON3.write(f,S)
   close(f)
 end
 
-function read_sim(filename :: String)
+function read(filename :: String)
+  input, traj = read_wg(filename)
+  GC.gc()
+  return input, traj
+end
+
+function read_wg(filename :: String)
   f = open(filename,"r")
   S = JSON3.read(f,SaveData)
   traj = Traj(S.input.n,S.input.nsave)
@@ -29,7 +35,9 @@ function read_sim(filename :: String)
       traj.atoms[i].status[iat] = S.traj.atoms[i].status[iat]
     end
   end
-  return S.input, traj
+  input = S.input
+  S = nothing
+  return input, traj
 end
 
 

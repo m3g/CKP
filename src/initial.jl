@@ -6,7 +6,7 @@ using Random
 using Printf
 Random.seed!(1234567)
 
-function initial(input :: InputData)
+function initial(input :: Input)
 
   # To clear out the code
   n = input.n

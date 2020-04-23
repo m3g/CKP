@@ -2,7 +2,7 @@
 # Update positions, simple integrator
 #
 
-function update_positions!( atoms :: Atoms, f :: Array{Float64}, v :: Array{Float64}, input :: InputData )
+function update_positions!(atoms :: Atoms, f :: Array{Float64}, v :: Array{Float64}, input :: Input)
   n = input.n
   dt = input.dt
   x = atoms.x

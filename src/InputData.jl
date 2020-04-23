@@ -1,7 +1,7 @@
 
 using Parameters
 
-@with_kw struct InputData
+@with_kw struct Input
 
   # Number of particles
   n :: Int64 = 1000
@@ -50,4 +50,5 @@ using Parameters
   uf = "uf_QUAD!"
 
 end
+
 

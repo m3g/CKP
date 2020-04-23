@@ -8,7 +8,7 @@
 # -> does not update contaminations or count encounters
 #
 
-function uf_LJ!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: InputData)
+function uf_LJ!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: Input)
 
   resetForces!(f)
 

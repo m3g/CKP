@@ -9,7 +9,7 @@
 # -> does not update contaminations or count encounters
 #
 
-function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: InputData)
+function uf_QUAD!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: Input)
 
   resetForces!(f)
 
@@ -37,7 +37,7 @@ end
 # -> used in the production simulation, to compute the contamination
 #
 
-function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Forces, input :: InputData)
+function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Forces, input :: Input)
 
   x = atoms.x
   resetForces!(f)
