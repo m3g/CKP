@@ -3,7 +3,7 @@
 ## Install with
 
 ```
-] add https://github.com/m3g/ckp
+] add https://github.com/m3g/CKP
 ```
 
 ## Run with default parameters
