@@ -5,6 +5,8 @@ module CKP
   include("Atoms.jl")
   include("Traj.jl")
   include("Forces.jl")
+ 
+  include("save.jl")
 
   include("setindex2D.jl")
   include("update_status.jl")
