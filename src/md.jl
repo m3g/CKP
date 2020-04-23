@@ -16,7 +16,11 @@ function md(input :: InputData)
   # Just to clear out the code
   n = input.n
   dt = input.dt
-  uf! = input.uf!
+  if input.uf == "uf_LJ!"
+    uf! = uf_LJ!
+  else
+    uf! = input.uf
+  end
 
   # Initial point and data structures
   atoms, traj = initial(input)
@@ -24,13 +28,13 @@ function md(input :: InputData)
 
   # Vectors for velocities and forces
   v = similar(x)
-  forces = Forces(n)
+  forces = Forces(input)
   f = forces.f
 
   # Initial velocities are very small, to see thermalization
   for i in 1:n
-    v[i,1] = normal(sqrt(input.kavg_target),input.kavg_target)
-    v[i,2] = normal(sqrt(input.kavg_target),input.kavg_target) 
+    v[i,1] = normal(1.e-3*sqrt(input.kavg_target),1.e-3*input.kavg_target)
+    v[i,2] = normal(1.e-3*sqrt(input.kavg_target),1.e-3input.kavg_target) 
   end
   kstep = kinetic(n,v)
   kavg = kstep / n
@@ -95,7 +99,7 @@ function md(input :: InputData)
   
     # Print data on screen
     if istep%input.iprint-1 == 0
-      println(@sprintf(" EQUIL TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
+      println(@sprintf(" EQUIL TIME= %12.5f U = %12.5f K_avg = %12.5f TOT = %12.5f ", time, ustep, kavg, energy))
     end
    
     # Update velocities (using Berendsen rescaling)
@@ -136,7 +140,7 @@ function md(input :: InputData)
 
     # Print data on screen
     if istep%input.iprint-1 == 0
-      println(@sprintf(" PROD TIME= %12.5f U = %12.5f K = %12.5f TOT = %12.5f ", time, ustep, kstep, energy))
+      println(@sprintf(" PROD TIME= %12.5f U = %12.5f K_avg = %12.5f TOT = %12.5f ", time, ustep, kavg, energy))
     end
    
     # Save trajectory point

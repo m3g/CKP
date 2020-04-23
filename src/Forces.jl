@@ -10,14 +10,23 @@ struct Forces
   upartial :: Vector{Float64}
   nenc_partial :: Vector{Int64}
 
+  sig2 :: Float64
+  cutoff2 :: Float64
+  sig6 :: Float64
+  sig12 :: Float64
+  sig66 :: Float64
+  sig1212 :: Float64
+  eps4 :: Float64
+
 end
 
 # Initializer
 
-Forces(n::Int64) = 
-  Forces(zeros(n,2), # actual forces
-         [ zeros(n,2) for i in 1:Threads.nthreads() ], # partials for parallel computations
+Forces(input :: InputData) = 
+  Forces(zeros(input.n,2), # actual forces
+         [ zeros(input.n,2) for i in 1:Threads.nthreads() ], # partials for parallel computations
          zeros(Float64,Threads.nthreads()), # partial energies for parallel computation
-         zeros(Int64,Threads.nthreads()) ) # partial number of encounters
+         zeros(Int64,Threads.nthreads()), # partial number of encounters
+         input.sig^2, input.cutoff^2, input.sig^6, input.sig^12, -6*input.sig^6, -12*input.sig^12, 4*input.eps )
 
 

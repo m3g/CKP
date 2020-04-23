@@ -36,19 +36,18 @@ using Parameters
   tol :: Float64 = 1e-2
 
   # Fraction of initially contamined individuals
-  f0 = 0.01
+  f0 :: Float64 = 0.01
 
   # Cross-section and probability of contamination
-  xsec = 4.
-  pcont = 0.3
+  xsec :: Float64 = 4.
+  pcont :: Float64 = 0.3
  
   # chance of dieing or getting immune (per step)
-  pdie = 0.0001
-  pimmune = 0.0005
+  pdie :: Float64 = 0.0001
+  pimmune :: Float64 = 0.0005
 
-  # Energy function
-  #uf! = uf_LJ!
-  uf! = uf_QUAD!
+  # Energy function (defaults to LJ inside codes)
+  uf = "uf_LJ!"
 
 end
 

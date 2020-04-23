@@ -17,7 +17,11 @@ function initial(input :: InputData)
 
   # Local names for code simplicity
   x = atoms.x # this does not not copy x, so that is fine
-  uf! = input.uf!
+  if input.uf == "uf_LJ!"
+    uf! = uf_LJ!
+  else
+    uf! = input.uf
+  end
 
   # Creating random initial coordinates
   i = 0
@@ -28,7 +32,7 @@ function initial(input :: InputData)
   end
 
   xtrial = similar(x)
-  forces = Forces(n)
+  forces = Forces(input)
   f = forces.f
 
   # Minimizing the energy of the initial point

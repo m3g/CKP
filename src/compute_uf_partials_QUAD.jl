@@ -2,13 +2,13 @@
 
 function compute_uf_partials_QUAD!(it :: Int64, f :: Forces, 
                                    i :: Int64, j :: Int64,
-                                   xi :: Float64, xj :: Float64, r :: Float64,
+                                   xj :: Float64, yj :: Float64, r :: Float64,
                                    input :: InputData)
 
    f.upartial[it] = f.upartial[it] + input.eps*(input.sig-r)^2
    
-   drdxi = -xi/r
-   drdyi = -xj/r 
+   drdxi = -xj/r
+   drdyi = -yj/r 
 
    fx = 2*input.eps*(input.sig-r)*drdxi
    fy = 2*input.eps*(input.sig-r)*drdyi
