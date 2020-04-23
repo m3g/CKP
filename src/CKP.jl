@@ -30,6 +30,11 @@ module CKP
   include("md.jl")
 
   include("animate.jl")
+
+  include("SIRDInput.jl")
+  include("SIRDTraj.jl")
+  include("sird.jl")
+  include("sirdplot.jl")
   
 end
 

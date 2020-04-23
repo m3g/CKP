@@ -18,11 +18,10 @@ function uf_LJ!(n :: Int64, x :: Array{Float64}, f :: Forces, input :: Input)
       xj = image(x[j,1] - x[i,1],input)
       yj = image(x[j,2] - x[i,2],input)
       r2 = xj^2 + yj^2
-      if r2 > f.cutoff2
-        continue
+      if r2 < f.cutoff2
+        r = sqrt(r2)
+        compute_uf_partials_LJ!(it,f,i,j,xj,yj,r,input)
       end
-      r = sqrt(r2)
-      compute_uf_partials_LJ!(it,f,i,j,xj,yj,r,input)
     end
   end
 
@@ -57,15 +56,13 @@ function uf_LJ!(n :: Int64, atoms :: Atoms, f :: Forces, input :: Input)
       xj = image(x[j,1] - x[i,1],input)
       yj = image(x[j,2] - x[i,2],input)
       r2 = xj^2 + yj^2
-      if r2 > f.cutoff2
-        continue  
-      end
-      r = sqrt(r2)
-      compute_uf_partials_LJ!(it,f,i,j,xj,yj,r,input)
-
-      atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
-      if encounter
-        f.nenc_partial[it] = f.nenc_partial[it] + 1
+      if r2 < f.cutoff2
+        r = sqrt(r2)
+        compute_uf_partials_LJ!(it,f,i,j,xj,yj,r,input)
+        atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
+        if encounter
+          f.nenc_partial[it] = f.nenc_partial[it] + 1
+        end
       end
 
     end

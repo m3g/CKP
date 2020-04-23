@@ -57,14 +57,14 @@ function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, las
     plot!(xlabel="Time",ylabel="Number of individuals",subplot=2)
 
     plot!(rectangle((7/20)*xmax, # xlength
-                    215, #ylength
+                    0.210*traj.n, #ylength
                     0, #xmin
-                    810, #ymin
+                    0.815*traj.n, #ymin
                     ), opacity=0.9,label="",color=:white,subplot=2)
     plot!(rectangle((9/20)*xmax, # xlength
-                    115, #ylength
+                    0.210*traj.n, #ylength
                     (11/20)*xmax, #xmin
-                    910, #ymin
+                    0.810*traj.n, #ymin
                     ), opacity=0.9,label="",color=:white,subplot=2)
 
     fontsize=8
@@ -74,6 +74,8 @@ function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, las
     annotate!(0.05*xmax,input.n-0.15*input.n,text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
     annotate!(0.98*xmax,input.n-0.00*input.n,text("\"Temperature\": $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
     annotate!(0.98*xmax,input.n-0.05*input.n,text("Encounters per day: $snenc",:right,fontsize,:serif,:black),subplot=2)
+    annotate!(0.98*xmax,input.n-0.10*input.n,text("Cross-section: $(input.xsec)",:right,fontsize,:serif,:black),subplot=2)
+    annotate!(0.98*xmax,input.n-0.15*input.n,text("P(contamination): $(input.pcont)",:right,fontsize,:serif,:black),subplot=2)
 
     next!(p)
 

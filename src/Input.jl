@@ -3,6 +3,10 @@ using Parameters
 
 @with_kw struct Input
 
+  #
+  # Atomistic simulation parameters
+  #
+
   # Number of particles
   n :: Int64 = 1000
 

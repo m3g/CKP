@@ -1,0 +1,28 @@
+#
+# SIRD model input data
+#
+
+@with_kw struct SIRDInput
+
+  # 
+  # SIRD simulation parameters
+  #
+
+  Si :: Float64 = 0.01 # Initial fraction of sick individuals
+  Di :: Float64 = 0.01 # Initial fraction of dead indidivuals
+  Ii :: Float64 = 0. # Initial fraction of immune individuals
+
+  kc :: Float64  = 0.3 # Rate constant for contamination
+  kd :: Float64 = 1/100 # Rate constant for deceases 
+  ki :: Float64 = 1/3 # Rate constant for immunization
+  kiu :: Float64 = 0.001 # Rate constant for immunity loss
+ 
+  dt :: Float64 = 0.01 # time step
+  tmax :: Float64 = 200. # maximum time
+
+  tol :: Float64 = 1.e-4 # stop if the fraction of sick people is smaller than this
+  
+  err :: Float64 = 1.e-3 # error tolerance for integrator
+
+end
+
