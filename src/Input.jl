@@ -51,4 +51,7 @@ using Parameters
 
 end
 
+# Avoid stupid typos when initializing
+input = Input
+
 
