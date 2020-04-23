@@ -16,8 +16,8 @@ function md(input :: InputData)
   # Just to clear out the code
   n = input.n
   dt = input.dt
-  if input.uf == "uf_LJ!"
-    uf! = uf_LJ!
+  if input.uf == "uf_QUAD!"
+    uf! = uf_QUAD!
   else
     uf! = input.uf
   end

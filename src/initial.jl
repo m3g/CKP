@@ -17,8 +17,8 @@ function initial(input :: InputData)
 
   # Local names for code simplicity
   x = atoms.x # this does not not copy x, so that is fine
-  if input.uf == "uf_LJ!"
-    uf! = uf_LJ!
+  if input.uf == "uf_QUAD!"
+    uf! = uf_QUAD!
   else
     uf! = input.uf
   end

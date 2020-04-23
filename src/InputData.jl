@@ -46,8 +46,8 @@ using Parameters
   pdie :: Float64 = 0.0001
   pimmune :: Float64 = 0.0005
 
-  # Energy function (defaults to LJ inside codes)
-  uf = "uf_LJ!"
+  # Energy function (defaults to QUAD inside codes)
+  uf = "uf_QUAD!"
 
 end
 
