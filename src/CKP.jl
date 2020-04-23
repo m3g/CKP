@@ -6,6 +6,7 @@ module CKP
   include("Traj.jl")
   include("Forces.jl")
 
+  include("setindex2D.jl")
   include("update_status.jl")
 
   include("resetForces.jl")

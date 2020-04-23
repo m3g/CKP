@@ -4,35 +4,22 @@
 #
 # modifies vector f, returns u
 
-function setindex2D(ipair,npairs)
-  j = ipair%npairs
-  if j == 0
-    j = 1
-  end
-  i = round(Int64,(npairs-j)/npairs)+1
-  return i, j
-end
-
-using OffsetArrays
-
 function uf_QUAD_LL!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input :: InputData)
 
-  @. f = 0.
-  upartial = zeros(Float64,Threads.nthreads())
-
-  # Create lists
-  boxside = input.side/cutoff
-  nboxes = round(Int64,input.side/boxside)
-  ifirst = OffsetArray{Int64}(undef,nboxes,nboxes)
-  inext = zeros(Int64,n)
+  # Clear forces, ifirst, and inext arrays
+  resetForces(f)
+  @. f.ifirst = 0
+  @. f.inext = 0
 
   # Add atoms to their boxes
   for i in 1:n
-    ibox = trunc(Int64,x[i,1]/cutoff)+1
-    jbox = trunc(Int64,x[i,2]/cutoff)+1
+    ibox = trunc(Int64,x[i,1]/input.cutoff)+1
+    jbox = trunc(Int64,x[i,2]/input.cutoff)+1
     inext[i] = ifirst[ibox,jbox]
     ifirst[ibox,jbox] = i
   end
+
+voltar
 
   # Cycle over boxes computing interactions
   for iboxes in 1:nboxes 
