@@ -36,7 +36,7 @@ end
 # -> used in the production simulation, to compute the contamination
 #
 
-function uf_LJ!(n :: Int64, atoms :: Atoms, f :: Forces, input :: InputData)
+function uf_LJ!(n :: Int64, atoms :: Atoms, f :: Forces, input :: Input)
 
   x = atoms.x
   resetForces!(f)
