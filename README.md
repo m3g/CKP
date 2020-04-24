@@ -25,7 +25,7 @@ trajectory = CKP.md()
 ```
 ## Example output plot:
 <p align="center">
-<img src="https://raw.githubusercontent.com/m3g/CKP/master/figures/md.gif">
+<img height=300px src="https://raw.githubusercontent.com/m3g/CKP/master/figures/md.gif">
 <br><br>
 
 ## Run SIRD simulation with default parameters
@@ -47,5 +47,6 @@ trajectory = CKP.sird(input)
 
 ## Example output plot:
 <p align="center">
-<img src="https://raw.githubusercontent.com/m3g/CKP/master/figures/sird.png">
+<img height=300px src="https://raw.githubusercontent.com/m3g/CKP/master/figures/sird.png">
 <br><br>
+
