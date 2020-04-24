@@ -6,7 +6,7 @@
 ] add https://github.com/m3g/CKP
 ```
 
-## Run with default parameters
+## Run "MD" simulation with default parameters
 ```
 input = CKP.input()
 trajectory = CKP.md()
@@ -24,3 +24,19 @@ input = CKP.input(kavg_target=0.5)
 trajectory = CKP.md()
 ```
 
+## Run SIRD simulation with default parameters
+```
+input = CKP.SIRDInput()
+trajectory = CKP.sird(input)
+```
+
+## Create plot
+```
+CKP.sirdplot(trajectory,input,"sird.pdf)
+```
+
+## Simulate with a different rate constant for contamination 
+```
+input = CKP.SIRDInput(kc=0.8)
+trajectory = CKP.sird(input)
+```
