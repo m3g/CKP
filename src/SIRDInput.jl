@@ -24,5 +24,7 @@
   
   err :: Float64 = 1.e-3 # error tolerance for integrator
 
+  nsave :: Int64 = 200 # Number of data points be saved
+
 end
 

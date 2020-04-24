@@ -8,9 +8,11 @@ Random.seed!(7654321)
 
 function md(input :: Input)
 
+  nprod = round(Int64,input.tmax/input.dt)
+
   # Check for input error
-  if input.nprod%input.nsave != 0
-    error("ERROR: nprod must be a multiple of nsave ")
+  if nprod%input.nsave != 0
+    error("ERROR: (tmax/dt) must be a multiple of nsave ")
   end
 
   # Just to clear out the code
@@ -107,20 +109,33 @@ function md(input :: Input)
 
   end
 
-  #
+  # Save initial point
+  ustep, nenc = uf!(n,atoms,forces,input)
+  kstep = kinetic(n,v) 
+  nsave = 1
+  for i in 1:n
+    traj.atoms[nsave].x[i,1] = atoms.x[i,1]
+    traj.atoms[nsave].x[i,2] = atoms.x[i,2]
+    traj.atoms[nsave].status[i] = atoms.status[i]
+  end
+  traj.potential[nsave] = ustep
+  traj.kinetic[nsave] = kstep
+  traj.total[nsave] = ustep + kstep
+  traj.time[nsave] = 0.
+  traj.nenc[nsave] = nenc
+
+  # 
   # Running simulation
   #
   println(" Running simulation: ")
-  nsteps = input.nprod
+  nsteps = nprod
   println(" Number of steps: ", nsteps)
-  isave = round(Int64,input.nprod/input.nsave)
+  isave = round(Int64,nprod/input.nsave)
   println(" Saving trajectory at every ", isave, " steps.")
-  time = 0.
-  nsave = 0
-  for istep in 1:nsteps
+  for istep in 2:nsteps
 
     # update time
-    time = time + dt
+    time = (istep-1)*dt
 
     # Updating positions 
     update_positions!(atoms,f,v,input)
@@ -144,7 +159,7 @@ function md(input :: Input)
     end
    
     # Save trajectory point
-    if (istep-1)%isave == 0
+    if (istep)%isave == 0
       nsave = nsave + 1
       for i in 1:n
         traj.atoms[nsave].x[i,1] = atoms.x[i,1]

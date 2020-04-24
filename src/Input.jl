@@ -12,7 +12,7 @@ using Parameters
 
   # Simulation time
   dt :: Float64 = 0.1
-  nprod :: Int64 = 10000
+  tmax :: Float64 = 1000 
 
   # Size of the box 
   side :: Float64 = 1000.

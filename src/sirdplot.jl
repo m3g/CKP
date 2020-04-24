@@ -9,7 +9,6 @@ function sirdplot( input :: SIRDInput, traj :: SIRDTraj, filename :: String;
 
   ENV["GKSwstype"]="nul"
 
-
   time = traj.time
   U = traj.U
   S = traj.S
