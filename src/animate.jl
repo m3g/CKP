@@ -2,8 +2,6 @@ using Printf
 using Plots
 using ProgressMeter
 
-rectangle(w, h, x, y) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
-
 function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, last=0, dpi=150)
 
   ENV["GKSwstype"]="nul"
@@ -23,6 +21,7 @@ function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, las
 
   # for subplot 2
   time = traj.time
+  xmin = 0.
   xmax = time[last]
   
   p = Progress(last,1)
@@ -56,26 +55,22 @@ function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, las
     plot!(xlim=[0,xmax],ylim=[0,traj.n],subplot=2)
     plot!(xlabel="Time",ylabel="Number of individuals",subplot=2)
 
-    plot!(rectangle((7/20)*xmax, # xlength
-                    0.210*traj.n, #ylength
-                    0, #xmin
-                    0.815*traj.n, #ymin
-                    ), opacity=0.9,label="",color=:white,subplot=2)
-    plot!(rectangle((9/20)*xmax, # xlength
-                    0.210*traj.n, #ylength
-                    (11/20)*xmax, #xmin
-                    0.810*traj.n, #ymin
-                    ), opacity=0.9,label="",color=:white,subplot=2)
-
     fontsize=8
-    annotate!(0.05*xmax,input.n-0.00*input.n,text("Susceptible: $(susc[i])",:left,fontsize,:serif,:blue),subplot=2)
-    annotate!(0.05*xmax,input.n-0.05*input.n,text("Sick: $(sick[i])",:left,fontsize,:serif,:red),subplot=2)
-    annotate!(0.05*xmax,input.n-0.10*input.n,text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
-    annotate!(0.05*xmax,input.n-0.15*input.n,text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
-    annotate!(0.98*xmax,input.n-0.00*input.n,text("\"Temperature\": $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
-    annotate!(0.98*xmax,input.n-0.05*input.n,text("Encounters per day: $snenc",:right,fontsize,:serif,:black),subplot=2)
-    annotate!(0.98*xmax,input.n-0.10*input.n,text("Cross-section: $(input.xsec)",:right,fontsize,:serif,:black),subplot=2)
-    annotate!(0.98*xmax,input.n-0.15*input.n,text("P(contamination): $(input.pcont)",:right,fontsize,:serif,:black),subplot=2)
+    plot!(rectangle( 0, 0.35*xmax, 0.815*traj.n, 1.02*traj.n), opacity=0.9,label="",color=:white,subplot=2)
+    x = 0.05*(xmax-xmin)+xmin
+    d = 0.05*input.n ; y = [ input.n + d ]
+    annotate!(x,yd!(y,d),text("Susceptible: $(susc[i])",:left,fontsize,:serif,:blue),subplot=2)
+    annotate!(x,yd!(y,d),text("Sick: $(sick[i])",:left,fontsize,:serif,:red),subplot=2)
+    annotate!(x,yd!(y,d),text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
+    annotate!(x,yd!(y,d),text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
+
+    plot!(rectangle( (11/20)*xmax, 1, 0.810*traj.n, 1.02*traj.n), opacity=0.9,label="",color=:white,subplot=2)
+    x = 0.98*(xmax-xmin)+xmin
+    d = 0.05*input.n ; y = [ input.n + d ]
+    annotate!(x,yd!(y,d),text("\"Temperature\": $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
+    annotate!(x,yd!(y,d),text("Encounters per day: $snenc",:right,fontsize,:serif,:black),subplot=2)
+    annotate!(x,yd!(y,d),text("Cross-section: $(input.xsec)",:right,fontsize,:serif,:black),subplot=2)
+    annotate!(x,yd!(y,d),text("P(contamination): $(input.pcont)",:right,fontsize,:serif,:black),subplot=2)
 
     next!(p)
 

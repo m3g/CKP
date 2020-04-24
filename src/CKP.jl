@@ -7,6 +7,7 @@ module CKP
   include("Forces.jl")
  
   include("save.jl")
+  include("plot_tools.jl")
 
   include("setindex2D.jl")
   include("update_status.jl")
