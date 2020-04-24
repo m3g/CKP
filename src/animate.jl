@@ -64,7 +64,7 @@ function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, las
     annotate!(x,yd!(y,d),text("Dead: $(dead[i])",:left,fontsize,:serif,:black),subplot=2)
     annotate!(x,yd!(y,d),text("Immune: $(immune[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
 
-    plot!(rectangle( (11/20)*xmax, 1, 0.810*traj.n, 1.02*traj.n), opacity=0.9,label="",color=:white,subplot=2)
+    plot!(rectangle( 0.55*xmax, 1.00*xmax, 0.810*traj.n, 1.02*traj.n), opacity=0.9,label="",color=:white,subplot=2)
     x = 0.98*(xmax-xmin)+xmin
     d = 0.05*input.n ; y = [ input.n + d ]
     annotate!(x,yd!(y,d),text("\"Temperature\": $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
