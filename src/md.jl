@@ -46,6 +46,9 @@ function md(input :: Input)
   u = uf!(n,x,forces,input)
   kini = kinetic(n,v)
 
+  println(" ----------------------------------------------------------------")
+  println(" EQUILIBRATION")
+  println(" ----------------------------------------------------------------")
   println(" Potential energy at initial point: ", u)
   println(" Kinetic energy at initial point: ", kini)
   eini = u + kini
@@ -61,19 +64,22 @@ function md(input :: Input)
   istep = 0
   while iequil != 0
     istep = istep + 1
-    
-    # update time
-    time = time + dt
+
+    # compute forces and energy at this point
+    @. flast = f
+    ustep = uf!(n,x,forces,input)
+    kstep = kinetic(n,v) 
+    energy = kstep + ustep 
+    kavg = kstep / n
 
     # update positions
     update_positions!(atoms,f,v,input)
 
-    # compute forces and energy at this point
-    @. flast = f
-    kstep = kinetic(n,v) 
-    ustep = uf!(n,x,forces,input)
-    energy = kstep + ustep 
-    kavg = kstep / n
+    # Update velocities (using Berendsen rescaling)
+    update_velocities!(v,kavg,f,flast,input)
+
+    # update time
+    time = istep*dt
 
     # Stop if average kinetic energy of last 20 points is good enough
     if input.nequil < 0 
@@ -104,41 +110,20 @@ function md(input :: Input)
       println(@sprintf(" EQUIL TIME= %12.5f U = %12.5f K_avg = %12.5f TOT = %12.5f ", time, ustep, kavg, energy))
     end
    
-    # Update velocities (using Berendsen rescaling)
-    update_velocities!(v,kavg,f,flast,input)
-
   end
-
-  # Save initial point
-  ustep, nenc = uf!(n,atoms,forces,input)
-  kstep = kinetic(n,v) 
-  nsave = 1
-  for i in 1:n
-    traj.atoms[nsave].x[i,1] = atoms.x[i,1]
-    traj.atoms[nsave].x[i,2] = atoms.x[i,2]
-    traj.atoms[nsave].status[i] = atoms.status[i]
-  end
-  traj.potential[nsave] = ustep
-  traj.kinetic[nsave] = kstep
-  traj.total[nsave] = ustep + kstep
-  traj.time[nsave] = 0.
-  traj.nenc[nsave] = nenc
 
   # 
   # Running simulation
   #
-  println(" Running simulation: ")
+  println(" ----------------------------------------------------------------")
+  println(" PRODUCTION")
+  println(" ----------------------------------------------------------------")
   nsteps = nprod
   println(" Number of steps: ", nsteps)
   isave = round(Int64,nprod/input.nsave)
   println(" Saving trajectory at every ", isave, " steps.")
-  for istep in 2:nsteps
-
-    # update time
-    time = (istep-1)*dt
-
-    # Updating positions 
-    update_positions!(atoms,f,v,input)
+  nsaved = 0
+  for istep in 1:nsteps
 
     # compute forces and energy at this point
     @. flast = f
@@ -147,32 +132,15 @@ function md(input :: Input)
     energy = kstep + ustep 
     kavg = kstep / n
 
-    # Stop if simulation exploded
-    if ustep > 1.e10
-      println("STOP: Simulation exploded at step ", istep, " with energy = ", energy)
-      return traj
-    end
+    # Updating positions 
+    update_positions!(atoms,f,v,input)
 
-    # Print data on screen
-    if istep%input.iprint-1 == 0
-      println(@sprintf(" PROD TIME= %12.5f U = %12.5f K_avg = %12.5f TOT = %12.5f ", time, ustep, kavg, energy))
-    end
-   
-    # Save trajectory point
-    if (istep)%isave == 0
-      nsave = nsave + 1
-      for i in 1:n
-        traj.atoms[nsave].x[i,1] = atoms.x[i,1]
-        traj.atoms[nsave].x[i,2] = atoms.x[i,2]
-        traj.atoms[nsave].status[i] = atoms.status[i]
-      end
-      traj.potential[nsave] = ustep
-      traj.kinetic[nsave] = kstep
-      traj.total[nsave] = energy
-      traj.time[nsave] = time
-      traj.nenc[nsave] = nenc
-    end
- 
+    # Update velocities (using Berendsen rescaling)
+    update_velocities!(v,kavg,f,flast,input)
+
+    # update time
+    time = istep*dt
+
     # Some sick people may dye, and other people may get immune
     if istep > input.nequil
       for i in 1:n
@@ -198,9 +166,32 @@ function md(input :: Input)
       end
     end
 
-    # Update velocities (using Berendsen rescaling)
-    update_velocities!(v,kavg,f,flast,input)
+    # Stop if simulation exploded
+    if ustep > 1.e10
+      println("STOP: Simulation exploded at step ", istep, " with energy = ", energy)
+      return traj
+    end
 
+    # Print data on screen
+    if istep%input.iprint == 0
+      println(@sprintf(" PROD TIME= %12.5f U = %12.5f K_avg = %12.5f TOT = %12.5f ", time, ustep, kavg, energy))
+    end
+   
+    # Save trajectory point
+    if istep%isave == 0
+      nsaved = nsaved + 1
+      for i in 1:n
+        traj.atoms[nsaved].x[i,1] = atoms.x[i,1]
+        traj.atoms[nsaved].x[i,2] = atoms.x[i,2]
+        traj.atoms[nsaved].status[i] = atoms.status[i]
+      end
+      traj.potential[nsaved] = ustep
+      traj.kinetic[nsaved] = kstep
+      traj.total[nsaved] = energy
+      traj.time[nsaved] = time
+      traj.nenc[nsaved] = nenc
+    end
+ 
   end
   return traj
 

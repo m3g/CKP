@@ -37,8 +37,11 @@ function initial(input :: Input)
 
   # Minimizing the energy of the initial point
 
+  println(" ----------------------------------------------------------------")
+  println(" ENERGY MINIMIZATION")
+  println(" ----------------------------------------------------------------")
   ulast = uf!(n,x,forces,input)
-  println("Energy before minimization: ", ulast)
+  println(" Energy before minimization: ", ulast)
 
   dx = 1.0
   fnorm = 1.0
@@ -84,7 +87,7 @@ function initial(input :: Input)
 
   end
 
-  println("Energy after minimization: ", ulast)   
+  println(" Energy after minimization: ", ulast)   
 
   # Contamining some individuals
   ncont = max(n*input.f0,1)

@@ -14,7 +14,7 @@ end
 
 # Initialize from number of atoms and number of steps to be saved
 function Traj(n :: Int64, nsave :: Int64) 
-  nsteps = nsave + 1 # initial point + trajectory
+  nsteps = nsave 
   traj = Traj(
               n, # number of particles
               nsteps, # nsteps

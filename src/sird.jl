@@ -16,7 +16,7 @@ dDdt(S,input) = input.kd*S
 dIdt(S,I,input) = input.ki*S - input.kiu*I
 
 # error
-error(U,S,D,I) = abs(1. - (U + S + D + I))
+simrd_error(U,S,D,I) = abs(1. - (U + S + D + I))
 
 function sird(input :: SIRDInput)
 
@@ -76,7 +76,7 @@ function sird(input :: SIRDInput)
       break
     end
     # check if integration is going fine
-    err = error(Uc,Sc,Dc,Ic)
+    err = simrd_error(Uc,Sc,Dc,Ic)
     if err > input.err
       println(" SIRD: Integration error too large at step: ", i," error = ",err)
       nlast = i
