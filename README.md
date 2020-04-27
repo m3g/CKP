@@ -14,7 +14,7 @@ trajectory = CKP.md()
 
 ## Create animated gif 
 ```
-CKP.animate(trajectory,input,"animation.gif)
+CKP.animate(input,trajectory,"animation.gif)
 ```
 
 ## Simulate with a different average kinetic energy 
@@ -36,7 +36,7 @@ trajectory = CKP.sird(input)
 
 ## Create plot
 ```
-CKP.sirdplot(trajectory,input,"sird.pdf)
+CKP.sirdplot(input,trajectory,"sird.pdf)
 ```
 
 ## Simulate with a different rate constant for contamination 

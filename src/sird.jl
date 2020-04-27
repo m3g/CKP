@@ -16,7 +16,7 @@ dDdt(S,input) = input.kd*S
 dIdt(S,I,input) = input.ki*S - input.kiu*I
 
 # error
-simrd_error(U,S,D,I) = abs(1. - (U + S + D + I))
+sird_error(U,S,D,I) = abs(1. - (U + S + D + I))
 
 function sird(input :: SIRDInput)
 
@@ -32,43 +32,32 @@ function sird(input :: SIRDInput)
   time = traj.time
   isave = round(Int64,nsteps/input.nsave)
 
-  # Initial populations
-  S[1] = input.Si
-  D[1] = input.Di
-  I[1] = input.Ii
-  if S[1] + D[1] + I[1] > 1.
+  # Initial populations (p for "previous" to the first step)
+  Sp = input.Si
+  Dp = input.Di
+  Ip = input.Ii
+  if Sp + Dp + Ip > 1.
     error("Sum of sick, dead, and immune cannot be greater than 1.")
   end
-  U[1] = 1. - (S[1]+D[1]+I[1])
-  time[1] = 0.
+  Up = 1. - (Sp+Dp+Ip)
    
   # Running simulation
   nlast = nsteps
-  # Current values
-  Uc = U[1]
-  Sc = S[1]
-  Dc = D[1]
-  Ic = I[1]
-  is = 1
-  for i in 2:nsteps
-    # Previous values
-    Up = Uc
-    Sp = Sc
-    Dp = Dc
-    Ip = Ic
-    # Update populations
+  nsaved = 0
+  for i in 1:nsteps
+    # Update populations (c for current)
     Uc = Up + dUdt(Up,Sp,Ip,input)*dt
     Sc = Sp + dSdt(Up,Sp,input)*dt
     Dc = Dp + dDdt(Sp,input)*dt
     Ic = Ip + dIdt(Sp,Ip,input)*dt
     # Save data if required at this step
     if i%isave == 0
-      is = is + 1
-      U[is] = Uc
-      S[is] = Sc
-      D[is] = Dc
-      I[is] = Ic
-      time[is] = (i-1)*dt
+      nsaved = nsaved + 1
+      U[nsaved] = Uc
+      S[nsaved] = Sc
+      D[nsaved] = Dc
+      I[nsaved] = Ic
+      time[nsaved] = i*dt
     end
     # check if epidemics ended
     if Sc < input.tol
@@ -76,7 +65,7 @@ function sird(input :: SIRDInput)
       break
     end
     # check if integration is going fine
-    err = simrd_error(Uc,Sc,Dc,Ic)
+    err = sird_error(Uc,Sc,Dc,Ic)
     if err > input.err
       println(" SIRD: Integration error too large at step: ", i," error = ",err)
       nlast = i
@@ -84,16 +73,16 @@ function sird(input :: SIRDInput)
     end
   end
   println(" Epidemics ended at step = ", nlast)
-  println(" Last step saved = ", is, " time = ", time[is])
+  println(" Last step saved = ", nsaved, " time = ", time[nsaved])
   
   # Filling up vector up to the end, if the trajectory ended before
-  if is < input.nsave
-    for i in is:input.nsave
-      U[i] = U[is]
-      S[i] = S[is]
-      D[i] = D[is]
-      I[i] = I[is]
-      time[i] = (i-1)*isave*dt
+  if nsaved < input.nsave
+    for i in nsaved+1:input.nsave
+      U[i] = U[nsaved]
+      S[i] = S[nsaved]
+      D[i] = D[nsaved]
+      I[i] = I[nsaved]
+      time[i] = i*isave*dt
     end
   end
   return traj
