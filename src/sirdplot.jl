@@ -16,8 +16,8 @@ function sirdplot( input :: SIRDInput, traj :: SIRDTraj, filename :: String;
   I = traj.I
   nsteps = traj.nsteps
 
-  xmax = time[nsteps]
   xmin = time[1]
+  xmax = time[nsteps]
 
   plot(size=(400,400),framestyle=:box)
   plot!(time,U,label="",linewidth=2,color=:blue)
@@ -28,7 +28,7 @@ function sirdplot( input :: SIRDInput, traj :: SIRDTraj, filename :: String;
   plot!(ylabel="Fraction of the population")
   plot!(xlim=[0,xmax],ylim=[0,1])
 
-  plot!(rectangle(-0.05,80,0.76,1.02), opacity=0.9,label="",color=:white)
+  plot!(rectangle(-0.01*xmax,0.4*xmax,0.76,1.02), opacity=0.9,label="",color=:white)
 
   fontsize=8
   x = 0.01*(xmax-xmin) + xmin
@@ -39,7 +39,7 @@ function sirdplot( input :: SIRDInput, traj :: SIRDTraj, filename :: String;
   annotate!(x,yd!(y,d),text("Immune: $(@sprintf("%2.1f",I[nsteps]*100))%",:left,fontsize,:serif,:darkgreen))
   annotate!(x,yd!(y,d),text("Dead: $(@sprintf("%2.1f",D[nsteps]*100))%",:left,fontsize,:serif,:black))
 
-  plot!(rectangle(88, 202, 0.915, 1.02), opacity=0.9,label="",color=:white)
+  plot!(rectangle(0.44*xmax, 1.01*xmax, 0.915, 1.02), opacity=0.9,label="",color=:white)
 
   x = 0.98*(xmax-xmin)+xmin
   d = 0.05 ; y = [ 0.99 + d ] 

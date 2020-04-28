@@ -1,9 +1,9 @@
 
 module CKP
 
-  include("Input.jl")
+  include("MDInput.jl")
   include("Atoms.jl")
-  include("Traj.jl")
+  include("MDTraj.jl")
   include("Forces.jl")
  
   include("save.jl")
@@ -36,6 +36,10 @@ module CKP
   include("SIRDTraj.jl")
   include("sird.jl")
   include("sirdplot.jl")
+
+  include("fiteval.jl")
+  include("fit.jl")
+  include("fitplot.jl")
   
 end
 

@@ -1,7 +1,7 @@
 
 using Parameters
 
-@with_kw struct Input
+@with_kw struct MDInput
 
   #
   # Atomistic simulation parameters
@@ -39,8 +39,8 @@ using Parameters
   # Parameters of optimization method for initial point
   tol :: Float64 = 1e-2
 
-  # Fraction of initially contamined individuals
-  f0 :: Float64 = 0.01
+  # Fraction of initially sick individuals
+  Si :: Float64 = 0.01
 
   # Cross-section and probability of contamination
   xsec :: Float64 = 4.
@@ -54,8 +54,4 @@ using Parameters
   uf = "uf_QUAD!"
 
 end
-
-# Avoid stupid typos when initializing
-input = Input
-
 

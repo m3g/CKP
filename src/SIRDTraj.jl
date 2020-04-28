@@ -12,7 +12,7 @@ struct SIRDTraj
 end
 
 function SIRDTraj( input :: SIRDInput )
-  nsteps = round(Int64,input.nsave)
+  nsteps = input.nsave
   U = Vector{Float64}(undef,nsteps)
   S = Vector{Float64}(undef,nsteps)
   D = Vector{Float64}(undef,nsteps)

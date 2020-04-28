@@ -9,7 +9,7 @@
   #
 
   Si :: Float64 = 0.01 # Initial fraction of sick individuals
-  Di :: Float64 = 0.01 # Initial fraction of dead indidivuals
+  Di :: Float64 = 0. # Initial fraction of dead indidivuals
   Ii :: Float64 = 0. # Initial fraction of immune individuals
 
   kc :: Float64  = 0.3 # Rate constant for contamination
@@ -25,6 +25,8 @@
   err :: Float64 = 1.e-3 # error tolerance for integrator
 
   nsave :: Int64 = 200 # Number of data points be saved
+ 
+  print :: Bool  = true # Print or not data on the screen
 
 end
 

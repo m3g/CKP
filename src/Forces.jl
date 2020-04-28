@@ -32,7 +32,7 @@ end
 
 # Initializer
 
-function Forces(input :: Input)  
+function Forces(input :: MDInput)  
 
   boxside = input.side/input.cutoff
   nboxes = round(Int64,input.side/boxside)

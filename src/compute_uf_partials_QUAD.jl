@@ -3,7 +3,7 @@
 function compute_uf_partials_QUAD!(it :: Int64, f :: Forces, 
                                    i :: Int64, j :: Int64,
                                    xj :: Float64, yj :: Float64, r :: Float64,
-                                   input :: Input)
+                                   input :: MDInput)
 
    f.upartial[it] = f.upartial[it] + input.eps*(input.sig-r)^2
    

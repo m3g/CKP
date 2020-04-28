@@ -4,7 +4,7 @@
 #
 # modifies vector f, returns u
 
-function uf_QUAD_LL!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input :: Input)
+function uf_QUAD_LL!(n :: Int64, x :: Array{Float64}, f :: Array{Float64}, input :: MDInput)
 
   # Clear forces, ifirst, and inext arrays
   resetForces(f)
@@ -131,7 +131,7 @@ end
 
 end
 
-function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: Input)
+function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Array{Float64}, input :: MDInput)
 
   x = atoms.x
 

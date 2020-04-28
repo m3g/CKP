@@ -3,7 +3,7 @@
 function compute_uf_partials_LJ!(it :: Int64, f :: Forces, 
                                  i :: Int64, j :: Int64,
                                  xj :: Float64, yj :: Float64, r :: Float64,
-                                 input :: Input)
+                                 input :: MDInput)
   r6 = r^6
   r12 = r6^2
   r7 = r6*r

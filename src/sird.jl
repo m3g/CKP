@@ -9,28 +9,44 @@
 #
 
 # Diferential equations
-
-dUdt(U,S,I,input) = -input.kc*U*S + input.kiu*I
-dSdt(U,S,input) = input.kc*U*S - (input.kd+input.ki)*S
-dDdt(S,input) = input.kd*S
-dIdt(S,I,input) = input.ki*S - input.kiu*I
+dUdt(U,S,I,k) = -k[1]*U*S + k[4]*I
+dSdt(U,S,k) = k[1]*U*S - (k[2]+k[3])*S
+dDdt(S,k) = k[2]*S
+dIdt(S,I,k) = k[3]*S - k[4]*I
 
 # error
 sird_error(U,S,D,I) = abs(1. - (U + S + D + I))
 
+# A method that will be used if the trajectory structure was not created outside
 function sird(input :: SIRDInput)
-
   traj = SIRDTraj(input)
+  sird!(input,traj)
+  return traj
+end
 
-  # To clear out the code
+# We need this layer for the optimization procedure to be able to receive a variable (modifies traj)
+function sird!(input :: SIRDInput, traj :: SIRDTraj)
+  k = [ input.kc, input.kd, input.ki, input.kiu ]
+  sird!(k, input, traj)
+end
+
+# Function that performs the simulation, modifies the data in traj structure (modifies traj)
+function sird!(k :: Vector{Float64}, input :: SIRDInput, traj :: SIRDTraj)
+
+  # Number of steps
   dt = input.dt
   nsteps = round(Int64,input.tmax/dt)
+  if nsteps%input.nsave != 0
+    error(" In SIRD (tmax/dt) must be a multiple of nsave")
+  end
+  isave = round(Int64,nsteps/input.nsave)
+
+  # To clear out the code
   U = traj.U
   S = traj.S
   D = traj.D
   I = traj.I
   time = traj.time
-  isave = round(Int64,nsteps/input.nsave)
 
   # Initial populations (p for "previous" to the first step)
   Sp = input.Si
@@ -46,10 +62,10 @@ function sird(input :: SIRDInput)
   nsaved = 0
   for i in 1:nsteps
     # Update populations (c for current)
-    Uc = Up + dUdt(Up,Sp,Ip,input)*dt
-    Sc = Sp + dSdt(Up,Sp,input)*dt
-    Dc = Dp + dDdt(Sp,input)*dt
-    Ic = Ip + dIdt(Sp,Ip,input)*dt
+    Uc = Up + dUdt(Up,Sp,Ip,k)*dt
+    Sc = Sp + dSdt(Up,Sp,k)*dt
+    Dc = Dp + dDdt(Sp,k)*dt
+    Ic = Ip + dIdt(Sp,Ip,k)*dt
     # Save data if required at this step
     if i%isave == 0
       nsaved = nsaved + 1
@@ -58,7 +74,7 @@ function sird(input :: SIRDInput)
       D[nsaved] = Dc
       I[nsaved] = Ic
       time[nsaved] = i*dt
-    end
+    end       
     # check if epidemics ended
     if Sc < input.tol
       nlast = i
@@ -67,24 +83,43 @@ function sird(input :: SIRDInput)
     # check if integration is going fine
     err = sird_error(Uc,Sc,Dc,Ic)
     if err > input.err
-      println(" SIRD: Integration error too large at step: ", i," error = ",err)
+      if input.print
+        println(input.print," SIRD: Integration error too large at step: ", i," error = ",err)
+      end
       nlast = i
       break
     end
+    # Update previous values to current ones
+    Up = Uc
+    Sp = Sc
+    Dp = Dc
+    Ip = Ic
   end
-  println(" Epidemics ended at step = ", nlast)
-  println(" Last step saved = ", nsaved, " time = ", time[nsaved])
+
+  if input.print
+    println(" Epidemics ended at step = ", nlast)
+    println(" Last step saved = ", nsaved, " time = ", time[nsaved])
+  end
   
   # Filling up vector up to the end, if the trajectory ended before
   if nsaved < input.nsave
-    for i in nsaved+1:input.nsave
-      U[i] = U[nsaved]
-      S[i] = S[nsaved]
-      D[i] = D[nsaved]
-      I[i] = I[nsaved]
-      time[i] = i*isave*dt
+    if nsaved == 0 # the simulation ended before the first point was saved
+      for i in 1:input.nsave
+        U[i] = Up
+        S[i] = Sp
+        D[i] = Dp
+        I[i] = Ip
+        time[i] = i*isave*dt
+      end
+    else
+      for i in nsaved+1:input.nsave
+        U[i] = U[nsaved]
+        S[i] = S[nsaved]
+        D[i] = D[nsaved]
+        I[i] = I[nsaved]
+        time[i] = i*isave*dt
+      end
     end
   end
-  return traj
 
 end

@@ -2,7 +2,7 @@
 # Update status of pacients
 #
 
-function update_status( s1 :: Int64, s2 :: Int64, r :: Float64, input :: Input)
+function update_status( s1 :: Int64, s2 :: Int64, r :: Float64, input :: MDInput)
   # Check contatmination
   if r < input.xsec
     if  ( s1 == 1 || s2 == 1 ) && ( s1 < 3 && s2 < 3 ) # 3 nor 4 are dead and immune

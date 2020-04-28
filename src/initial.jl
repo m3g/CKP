@@ -6,14 +6,14 @@ using Random
 using Printf
 Random.seed!(1234567)
 
-function initial(input :: Input)
+function initial(input :: MDInput)
 
   # To clear out the code
   n = input.n
 
   # Structures to save data
   atoms = Atoms(n)
-  traj = Traj(n,input.nsave)
+  traj = MDTraj(n,input.nsave)
 
   # Local names for code simplicity
   x = atoms.x # this does not not copy x, so that is fine
@@ -90,7 +90,7 @@ function initial(input :: Input)
   println(" Energy after minimization: ", ulast)   
 
   # Contamining some individuals
-  ncont = max(n*input.f0,1)
+  ncont = max(n*input.Si,1)
   nc = 0
   while nc < ncont
     i = trunc(Int64,n*rand())+1

@@ -6,7 +6,7 @@ using Printf
 using Random
 Random.seed!(7654321)
 
-function md(input :: Input)
+function md(input :: MDInput)
 
   nprod = round(Int64,input.tmax/input.dt)
 
@@ -190,6 +190,10 @@ function md(input :: Input)
       traj.total[nsaved] = energy
       traj.time[nsaved] = time
       traj.nenc[nsaved] = nenc
+      traj.U[nsaved] = count( x -> x == 0, traj.atoms[nsaved].status ) / n
+      traj.S[nsaved] = count( x -> x == 1, traj.atoms[nsaved].status ) / n
+      traj.D[nsaved] = count( x -> x == 2, traj.atoms[nsaved].status ) / n
+      traj.I[nsaved] = count( x -> x == 3, traj.atoms[nsaved].status ) / n
     end
  
   end

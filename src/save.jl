@@ -2,16 +2,16 @@ using StructTypes
 using JSON3
 
 struct SaveData
-  input :: Input
-  traj :: Traj
+  input :: MDInput
+  traj :: MDTraj
 end
 
-StructTypes.StructType(::Type{Input}) = StructTypes.Struct()
-StructTypes.StructType(::Type{Traj}) = StructTypes.Struct()
+StructTypes.StructType(::Type{MDInput}) = StructTypes.Struct()
+StructTypes.StructType(::Type{MDTraj}) = StructTypes.Struct()
 StructTypes.StructType(::Type{SaveData}) = StructTypes.Struct()
 StructTypes.StructType(::Type{Atoms}) = StructTypes.Struct()
 
-function write(input :: Input, traj :: Traj, filename :: String)
+function write(input :: MDInput, traj :: MDTraj, filename :: String)
   S = SaveData(input,traj)
   f = open(filename,"w")
   JSON3.write(f,S)
@@ -27,8 +27,8 @@ end
 function read_wg(filename :: String)
   f = open(filename,"r")
   S = JSON3.read(f,SaveData)
-  traj = Traj(S.input.n,S.input.nsave)
-  # Need to convert the Traj structure because the coordinates
+  traj = MDTraj(S.input.n,S.input.nsave)
+  # Need to convert the MDTraj structure because the coordinates
   # are read in a single column, instead of the [n,2] array we want.
   for i in 1:S.input.nsave 
     for iat in 1:S.input.n
@@ -41,6 +41,10 @@ function read_wg(filename :: String)
     traj.total[i] = S.traj.total[i]
     traj.time[i] = S.traj.time[i]
     traj.nenc[i] = S.traj.nenc[i]
+    traj.U[i] = S.traj.U[i]
+    traj.S[i] = S.traj.S[i]
+    traj.D[i] = S.traj.D[i]
+    traj.I[i] = S.traj.I[i]
   end
   input = S.input
   S = nothing

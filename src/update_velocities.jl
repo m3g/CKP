@@ -4,7 +4,7 @@
 
 function update_velocities!(v :: Array{Float64} ,kavg :: Float64, 
                             f :: Array{Float64}, flast :: Array{Float64},
-                            input :: Input)
+                            input :: MDInput)
 
   n = input.n
   dt = input.dt
