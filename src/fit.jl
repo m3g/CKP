@@ -6,8 +6,8 @@
 using Optim
 
 function fit(md_input :: MDInput, md_traj :: MDTraj; 
-             ipop :: Int64 = 2, 
-             bounded :: Bool = false, lower :: Vector{Float64} = zeros(4), upper :: Vector{Float64} = [10.,10.,10.,10.])
+             ipop :: Int64 = -1, 
+             bounded :: Bool = true, lower :: Vector{Float64} = zeros(4), upper :: Vector{Float64} = [10.,10.,10.,10.])
 
   sird_input = SIRDInput(tmax=md_input.tmax,nsave=md_traj.nsteps,
                          Si=md_input.Si,
@@ -19,12 +19,21 @@ function fit(md_input :: MDInput, md_traj :: MDTraj;
          rand()*sird_input.ki, 
          rand()sird_input.kiu ]
 
-  f(k0 :: Vector{Float64}) = fiteval!( k0, md_traj, sird_input, sird_traj, ipop )
+  fall(k0 :: Vector{Float64}) = fiteval!( k0, md_traj, sird_input, sird_traj )
+  fpop(k0 :: Vector{Float64}) = fiteval!( k0, md_traj, sird_input, sird_traj, ipop )
 
-  if ! bounded
-    x = Optim.optimize( f, k0, NelderMead() ) 
+  if bounded
+    if ipop == -1
+      x = Optim.optimize( fall, lower, upper, k0, Fminbox(NelderMead()) ) 
+    else
+      x = Optim.optimize( fpop, lower, upper, k0, Fminbox(NelderMead()) ) 
+    end
   else
-    x = Optim.optimize( f, lower, upper, k0, Fminbox(NelderMead()) ) 
+    if ipop == -1
+      x = Optim.optimize( fall, k0, NelderMead() ) 
+    else
+      x = Optim.optimize( fpop, k0, NelderMead() ) 
+    end
   end
 
   # Perform simulation with optimal parameters
@@ -35,7 +44,11 @@ function fit(md_input :: MDInput, md_traj :: MDTraj;
                           kiu = x.minimizer[4],
                           tmax = md_input.tmax, 
                           nsave = md_traj.nsteps )
-  fitresult = fiteval!(x.minimizer,md_traj,sird_input,sird_traj,ipop)
+  if ipop == -1
+    fitresult = fiteval!(x.minimizer,md_traj,sird_input,sird_traj)
+  else
+    fitresult = fiteval!(x.minimizer,md_traj,sird_input,sird_traj,ipop)
+  end
 
   println("-------------------------------------------------------")
   println(" Fitting result: ") 

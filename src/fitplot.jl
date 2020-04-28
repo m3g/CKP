@@ -28,10 +28,10 @@ function fitplot( md_input :: MDInput, md_traj :: MDTraj,
 
   plot(size=(400,400),framestyle=:box)
 
-  scatter!(time,mU,label="",markersize=2,markeralpha=0.7,markerstrokecolor=:blue,color=:blue)
-  scatter!(time,mS,label="",markersize=2,markeralpha=0.7,markerstrokecolor=:red,color=:red)
-  scatter!(time,mI,label="",markersize=2,markeralpha=0.7,markerstrokecolor=:darkgreen,color=:darkgreen)
-  scatter!(time,mD,label="",markersize=2,markeralpha=0.7,markerstrokecolor=:black,color=:black)
+  scatter!(time,mU,label="",color=:blue     , marker = (:circle, 3, 1.0, :blue, stroke(0.1, 0.5, :black))) 
+  scatter!(time,mS,label="",color=:red      , marker = (:circle, 3, 1.0, :red, stroke(0.1, 0.5, :black))) 
+  scatter!(time,mI,label="",color=:darkgreen, marker = (:circle, 3, 1.0, :darkgreen, stroke(0.1, 0.5, :black))) 
+  scatter!(time,mD,label="",color=:black    , marker = (:circle, 3, 1.0, :black, stroke(0.1, 0.5, :black)))
 
   plot!(time,sU,label="",linewidth=2,color=:blue)
   plot!(time,sS,label="",linewidth=2,color=:red)
