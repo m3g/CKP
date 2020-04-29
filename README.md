@@ -6,7 +6,7 @@
 ] add https://github.com/m3g/CKP
 ```
 *This is a Julia package, so install Julia first, from: 
-<a href=http://julialang.org>http://julialang.org</a>.
+<a target=_Julia_ href=http://julialang.org>http://julialang.org</a>.
 
 ## "Atomistic" simulations
 
