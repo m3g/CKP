@@ -7,9 +7,6 @@ using Optim
 
 # The two possible functions to be fited: all data or one of the curves, defined by ipop
 
-fall(k0 :: Vector{Float64}) = fiteval!( k0, md_traj, sird_input, sird_traj )
-fpop(k0 :: Vector{Float64}) = fiteval!( k0, md_traj, sird_input, sird_traj, ipop )
-
 function fit(md_input :: MDInput, md_traj :: MDTraj; 
              ipop :: Int64 = -1, 
              bounded :: Bool = true, lower :: Vector{Float64} = zeros(4), upper :: Vector{Float64} = [10.,10.,10.,10.])
@@ -23,6 +20,9 @@ function fit(md_input :: MDInput, md_traj :: MDTraj;
          rand()*sird_input.kd, 
          rand()*sird_input.ki, 
          rand()sird_input.kiu ]
+
+  fall(k0 :: Vector{Float64}) = fiteval!( k0, md_traj, sird_input, sird_traj )
+  fpop(k0 :: Vector{Float64}) = fiteval!( k0, md_traj, sird_input, sird_traj, ipop )
 
   if bounded
     if ipop == -1
