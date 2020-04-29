@@ -122,6 +122,9 @@ function md(input :: MDInput)
   println(" Number of steps: ", nsteps)
   isave = round(Int64,nprod/input.nsave)
   println(" Saving trajectory at every ", isave, " steps.")
+  # Compute energy at initial point (actually to initialize encij)
+  u = uf!(n,atoms,forces,input)
+  println(" Energy at initial point: ", u)
   nsaved = 0
   for istep in 1:nsteps
 
@@ -189,7 +192,7 @@ function md(input :: MDInput)
       traj.kinetic[nsaved] = kstep
       traj.total[nsaved] = energy
       traj.time[nsaved] = time
-      traj.nenc[nsaved] = nenc
+      traj.nenc[nsaved] = nenc*isave
       traj.U[nsaved] = count( x -> x == 0, traj.atoms[nsaved].status ) / n
       traj.S[nsaved] = count( x -> x == 1, traj.atoms[nsaved].status ) / n
       traj.D[nsaved] = count( x -> x == 2, traj.atoms[nsaved].status ) / n

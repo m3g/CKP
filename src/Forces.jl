@@ -28,6 +28,9 @@ struct Forces
   ifirst :: Array{Int64}
   inext :: Vector{Int64}
 
+  # Array to check for previous and new encounters
+  encij :: Vector{Bool}
+
 end
 
 # Initializer
@@ -44,7 +47,8 @@ function Forces(input :: MDInput)
                 zeros(Float64,Threads.nthreads()), # partial energies for parallel computation
                 zeros(Int64,Threads.nthreads()), # partial number of encounters
                 input.sig^2, input.cutoff^2, input.sig^6, input.sig^12, -6*input.sig^6, -12*input.sig^12, 4*input.eps,
-                nboxes, boxside, ifirst, inext )
+                nboxes, boxside, ifirst, inext,
+                zeros(round(Int64,(input.n*(input.n-1))/2)) )
 
 end
 
