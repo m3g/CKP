@@ -35,11 +35,11 @@ module CKP
   include("SIRDInput.jl")
   include("SIRDTraj.jl")
   include("sird.jl")
-  include("sirdplot.jl")
+  include("plotsird.jl")
 
   include("fiteval.jl")
   include("fit.jl")
-  include("fitplot.jl")
+  include("plotfit.jl")
   
 end
 

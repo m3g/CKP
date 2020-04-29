@@ -4,7 +4,7 @@
 
 using Plots
 
-function sirdplot( input :: SIRDInput, traj :: SIRDTraj, filename :: String; 
+function plotsird( input :: SIRDInput, traj :: SIRDTraj, filename :: String; 
                    size=(400,400) )
 
   ENV["GKSwstype"]="nul"

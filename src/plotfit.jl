@@ -4,7 +4,7 @@
 
 using Plots
 
-function fitplot( md_input :: MDInput, md_traj :: MDTraj,
+function plotfit( md_input :: MDInput, md_traj :: MDTraj,
                   sird_input :: SIRDInput, sird_traj :: SIRDTraj, 
                   filename :: String; 
                   size=(400,400) )
