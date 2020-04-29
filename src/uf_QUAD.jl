@@ -63,8 +63,8 @@ function uf_QUAD!(n :: Int64, atoms :: Atoms, f :: Forces, input :: MDInput)
           compute_uf_partials_QUAD!(it,f,i,j,xj,yj,r,input)
         end
         atoms.status[i], atoms.status[j], encounter = update_status(atoms.status[i],atoms.status[j],r,input)
+        ipair = setipair2D(n,i,j)
         if encounter 
-          ipair = (i-1)*n + j
           if ! f.encij[ipair] 
             f.nenc_partial[it] = f.nenc_partial[it] + 1
           end

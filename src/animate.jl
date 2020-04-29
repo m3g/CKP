@@ -71,7 +71,7 @@ function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, las
     x = 0.98*(xmax-xmin)+xmin
     d = 0.05*ymax ; y = [ ymax + d ]
     annotate!(x,yd!(y,d),text("\"Temperature\": $(input.kavg_target)",:right,fontsize,:serif,:black),subplot=2)
-    annotate!(x,yd!(y,d),text("Encounters per day: $snenc",:right,fontsize,:serif,:black),subplot=2)
+    annotate!(x,yd!(y,d),text("New encounters/step: $snenc",:right,fontsize,:serif,:black),subplot=2)
     annotate!(x,yd!(y,d),text("Cross-section: $(input.xsec)",:right,fontsize,:serif,:black),subplot=2)
     annotate!(x,yd!(y,d),text("P(contamination): $(input.pcont)",:right,fontsize,:serif,:black),subplot=2)
 

@@ -10,3 +10,13 @@ function setindex2D(ipair,npairs)
   return i, j
 end
 
+function setipair2D(n,i,j)
+  if j >= i
+    ipair = (i-1)*n + j
+  else
+    ipair = (j-1)*n + i
+  end
+  ipair = ipair - round(Int64,(i^2+i)/2)
+  return ipair
+end
+
