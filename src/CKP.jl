@@ -40,6 +40,8 @@ module CKP
   include("fiteval.jl")
   include("fit.jl")
   include("plotfit.jl")
+
+  include("plotU.jl")
   
 end
 
