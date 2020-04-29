@@ -40,7 +40,7 @@ function plotU(input :: MDInput, filename :: String; size=[400,400], xlim=[0.,-1
     end
   end
 
-  plot(size=size,ylabel="U(r)",xlabel="r")
+  plot(size=size,ylabel="U(r)",xlabel="r",framestyle=:box)
   plot!(x,U,label="",linewidth=2,xlim=xlim,ylim=ylim)
 
   fontsize=10
