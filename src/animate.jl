@@ -59,13 +59,13 @@ function animate(input, traj, filename; size = [800,400], fps :: Int64 = 10, las
     plot!(xlabel="Time",ylabel="Fraction of population",subplot=2)
 
     fontsize=8
-    plot!(rectangle( 0, 0.35*xmax, 0.815*ymax, 1.02*ymax), opacity=0.9,label="",color=:white,subplot=2)
+    plot!(rectangle( 0, 0.37*xmax, 0.815*ymax, 1.02*ymax), opacity=0.9,label="",color=:white,subplot=2)
     x = 0.05*(xmax-xmin)+xmin
     d = 0.05*ymax ; y = [ ymax + d ]
-    annotate!(x,yd!(y,d),text("Susceptible: $(U[i])",:left,fontsize,:serif,:blue),subplot=2)
-    annotate!(x,yd!(y,d),text("Sick: $(S[i])",:left,fontsize,:serif,:red),subplot=2)
-    annotate!(x,yd!(y,d),text("Dead: $(D[i])",:left,fontsize,:serif,:black),subplot=2)
-    annotate!(x,yd!(y,d),text("Immune: $(I[i])",:left,fontsize,:serif,:darkgreen),subplot=2)
+    annotate!(x,yd!(y,d),text("Susceptible: $(@sprintf("%4.2f%%",100*U[i]))",:left,fontsize,:serif,:blue),subplot=2)
+    annotate!(x,yd!(y,d),text("Sick: $(@sprintf("%4.2f%%",100*S[i]))",:left,fontsize,:serif,:red),subplot=2)
+    annotate!(x,yd!(y,d),text("Dead: $(@sprintf("%4.2f%%",100*D[i]))",:left,fontsize,:serif,:black),subplot=2)
+    annotate!(x,yd!(y,d),text("Immune: $(@sprintf("%4.2f%%",100*I[i]))",:left,fontsize,:serif,:darkgreen),subplot=2)
 
     plot!(rectangle( 0.53*xmax, 1.00*xmax, 0.810*ymax, 1.02*ymax), opacity=0.9,label="",color=:white,subplot=2)
     x = 0.98*(xmax-xmin)+xmin
