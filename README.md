@@ -5,8 +5,18 @@
 ```
 ] add https://github.com/m3g/CKP
 ```
+
+and then
+
+```
+using CKP
+```
+
 *This is a Julia package, so install Julia first, from: 
 <a target=_Julia_ href=http://julialang.org>http://julialang.org</a>.
+
+If this is your first time using Julia, the two steps above may take a while, since all
+dependencies will be automatically installed.
 
 ## "Atomistic" simulations
 
