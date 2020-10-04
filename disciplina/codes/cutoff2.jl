@@ -4,15 +4,17 @@ using Test
 # Distance function, considering PBC
 function r(x,y)
   side = 10.
+  # dx is a vector of the difference in position of y and x
+  dx = y - x
   for i in 1:2
-    dx = (y[i]-x[i])%side
-    if dx > side/2
-      y[i] = y[i] - side
-    elseif dx < -side/2
-      y[i] = y[i] + side
+    dx[i] = dx[i]%side
+    if dx[i] > side/2
+      dx[i] = dx[i] - side
+    elseif  < -side/2
+      dx[i] = dx[i] + side
     end
   end
-  return sqrt((y[1]-x[1])^2+(y[2]-x[2])^2)
+  return sqrt(dx[1]^2+dx[2]^2)
 end
 
 # Potential energy function
