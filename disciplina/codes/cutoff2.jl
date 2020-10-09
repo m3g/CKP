@@ -10,7 +10,7 @@ function r(x,y)
     dx[i] = dx[i]%side
     if dx[i] > side/2
       dx[i] = dx[i] - side
-    elseif  < -side/2
+    elseif  dx[i] < -side/2
       dx[i] = dx[i] + side
     end
   end
