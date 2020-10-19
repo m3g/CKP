@@ -3,7 +3,7 @@
 
 Posições geradas com:
 
-```
+```julia
 import Random
 Random.seed!(321)
 p = [ 12*rand(2) for i in 1:10 ]
