@@ -1,5 +1,5 @@
 
-## Atividade 25 - Inicialização de coordenadas e resultado esperado.
+## Atividade 27 - Lista de partículas por célula.
 
 Posições geradas com:
 
