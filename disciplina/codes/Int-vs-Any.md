@@ -232,6 +232,8 @@ se executada no REPL), indicando que o código é tipo-estável e vai poder
 ser especializado e, portanto, rápido.
 
 ```julia
+julia> x = [ isodd(i) ? [1] : Int64[] for i in 1:10_000 ];
+
 julia> @code_warntype s(x)
 Variables
   #self#::Core.Compiler.Const(s, false)
