@@ -28,7 +28,7 @@ scatter!(px,py,label="",alpha=0.2,color="blue")
 
 for i in 1:5
   for j in 1:5
-    annotate!(2*i-1,2*j-1,text("($i,$j)"))
+    annotate!(2*j-1,2*i-1,text("($i,$j)"))
   end
 end
 
