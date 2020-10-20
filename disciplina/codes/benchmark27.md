@@ -24,7 +24,7 @@ end
 A função acima recebe dois vetores, `x` e `n` como parâmetros, e modifica
 os dois vetores. Uma execução sem erros desta função seria:
 
-```julia-repl
+```julia
 julia> n = [1];
 
 julia> x = [1,2];
@@ -58,7 +58,7 @@ Portanto, esta função não pode ser executada duas vezes consecutivas sem que
 o vetor `n` seja re-inicialiado como `n[1]=1`. Isto gera uma dificuldade na realização
 de benchmarks: 
 
-```julia-repl
+```julia
 julia> n = [1];
 
 julia> x = [1,2];
