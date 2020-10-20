@@ -75,7 +75,7 @@ Para resolver isso, temos que explicitamente dizer que queremos que cada amostra
 do benchmark só tenha uma avaliação da função, e que o vetor tem que ser inicializado
 antes de cada amostra:
 
-```
+```julia
 julia> @btime f!(x,n) setup=(n=[1]) evals=1
   51.000 ns (0 allocations: 0 bytes)
 2-element Array{Int64,1}:
