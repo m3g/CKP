@@ -166,7 +166,7 @@ necessário testar nada, porque o programa já sabe de entrada que o que
 se espera é a uma soma de números inteiros (com a única exceção que o
 segundo termo seja vazio, em cujo caso a especialização se mantém). 
 
-### `@code_wartype`: Detectando instabilidades de tipo 
+### Detectando instabilidades de tipo: `@code_warntype` 
 
 Esse problema se chama "instabilidade de tipos". São muito prejudiciais
 para a eficiência de códigos em geral. Para evitar, ou encontrar, esse
