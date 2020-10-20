@@ -23,7 +23,7 @@ end
 # Compute the cell to which each particle belongs 
 function celllist(p,side,cutoff)
   n = round(Int64,side/cutoff)
-  cellparticles = [ [] for i in 1:n, j in 1:n ]
+  cellparticles = [ Int64[] for i in 1:n, j in 1:n ]
   for i in 1:length(p)
     icell = trunc(Int64,p[i][1]/cutoff) + 1
     jcell = trunc(Int64,p[i][2]/cutoff) + 1
