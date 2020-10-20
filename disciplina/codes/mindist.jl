@@ -12,13 +12,14 @@ function mindist(p,cellparticles,cutoff)
     for i in icell-1:icell+1
       if ( i < 1 || i > nc ) continue end # Border
       for j in jcell-1:jcell+1
-        if ( j < 1 || j > nc ) continue end # Borders
+        if ( j < 1 || j > nc ) continue end # Border
         # Loop over the particles of this cell
         for jp in cellparticles[i,j]
-          if ( jp <= ip ) continue end # Skip repeated
-          # Compute distance and keep minimum
-          d = min(d,sqrt( (p[ip][1]-p[jp][1])^2 +
-                          (p[ip][2]-p[jp][2])^2) )
+          if jp > ip # Skip repeated 
+            # Compute distance and keep minimum
+            d = min(d,sqrt( (p[ip][1]-p[jp][1])^2 +
+                            (p[ip][2]-p[jp][2])^2) )
+          end
         end
       end
     end
