@@ -76,7 +76,7 @@ do benchmark só tenha uma avaliação da função, e que o vetor tem que ser in
 antes de cada amostra:
 
 ```julia
-julia> @btime f!(x,n) setup=(n=[1]) evals=1
+julia> @btime f!($x,n) setup=(n=[1]) evals=1
   51.000 ns (0 allocations: 0 bytes)
 2-element Array{Int64,1}:
  1
@@ -88,9 +88,14 @@ O comando `setup` define o que precisa ser inicializado, e não é avaliado
 como parte do benchmark, e `evals=1` define que cada amostra do benchmark é realizada
 com uma única avaliação da função.
 
+Se há mais de um parâmetro a ser definido, é necessário usar esta sintaxe:
 
+```julia
+ @btime f!($x,n,m) setup=(n=[1]; m=[3,4,5]) evals=1
 
+```
 
-
+Note que o argumento que não é inicializado recebe o `$`, mas os que são incializados
+não.
 
 
