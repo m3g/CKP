@@ -110,7 +110,7 @@ que faz a mesma coisa:
 
 ```julia
 julia> function g(x)
-         s = 0
+         s = zero(eltype(x))
          for val in x
            s = s + val
          end
@@ -118,6 +118,14 @@ julia> function g(x)
        end
 
 ```
+
+Fomos obsessivos neste exemplo, inicializando `s` como
+`zero(eltype(x))`, que é um comando para dizer que `s` é o número zero
+do mesmo tipo que os elementos de `x`. Ou seja, se `x` for um vetor de
+números inteiros, `s` vai ser `0` (inteiro), se `x` for um vetor de
+números reais, `s` vai ser `0.0` (real). Isto não vai ser fundamental
+para a eficiência do código aqui, mas vai eliminar toda possível
+instabilidade de tipo, inclusive no valor inicial de `s`. 
 
 Agora, se chamarmos `g(x)` com um `x` de um determinado tipo, vai ser
 criado um *método* desta função especializado para este tipo de
@@ -130,12 +138,12 @@ julia> @code_warntype g(1)
 Variables
   #self#::Core.Compiler.Const(g, false)
   x::Int64
-  s::Float64
+  s::Int64
   @_4::Union{Nothing, Tuple{Int64,Nothing}}
   val::Int64
 
-Body::Float64
-1 ─       (s = 0.0)
+Body::Int64
+1 ─       (s = 0)
 │   %2  = x::Int64
 │         (@_4 = Base.iterate(%2))
 │   %4  = (@_4::Tuple{Int64,Nothing} === nothing)::Core.Compiler.Const(false, false)
@@ -155,9 +163,8 @@ Body::Float64
 ```
 
 Note que não há nenhum `Any` na representação do código acima e que, em
-particular, o resultado das operações é `Body::Float64`, um número real,
-com certeza (que é real simplesmente pore inicializamos `s` como um
-número real, porque usamos `s = 0.` e não `s = 0`). 
+particular, o resultado das operações é `Body::Int64`, um número inteiro,
+com certeza.
 
 Se
 chamarmos `g` com o número `3.14`, que é um número real, outro método é
@@ -241,54 +248,4 @@ Mas é um hábito muito mais saudável passar as variáveis como parâmetros
 das funções, porque o uso de constantes globais impede, por exemplo, que
 você modifique o valor de `x` e rode a função novamente com outro
 conjunto de dados.
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
