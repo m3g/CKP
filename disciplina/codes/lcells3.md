@@ -2,7 +2,7 @@
 
 ### Escrito em um arquivo com:
 
-```
+```julia
 f = open("./list.dat","w")
 for i in 1:size(list,1)
   println(f,"$(list[i,1]) $(list[i,2]) $(list[i,3]) $(list[i,4])")
