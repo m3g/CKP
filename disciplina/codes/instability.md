@@ -15,7 +15,7 @@ global*, ou seja, fora de qualquer função, ou módulo, ou outra estrutura
 que define um escopo (`let`, por exemplo). Obtemos uma variável global
 quando escrevemos, no REPL,
 
-```julia-repl
+```julia
 julia> x = 5. 
 ```
 
@@ -41,7 +41,7 @@ julia> x = "ABC"
 Agora, vamos definir uma função que usa o valor de `x`, sem passar `x`
 como parâmetro. Esta função vai somar todos os elementos de `x`:
 
-```julia
+```julia-repl
 julia> function f()
           s = 0
           for val in x
