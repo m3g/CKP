@@ -15,7 +15,7 @@ global*, ou seja, fora de qualquer função, ou módulo, ou outra estrutura
 que define um escopo (`let`, por exemplo). Obtemos uma variável global
 quando escrevemos, no REPL,
 
-```julia
+```julia-repl
 julia> x = 5. 
 ```
 
