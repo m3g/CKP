@@ -41,7 +41,7 @@ julia> x = "ABC"
 Agora, vamos definir uma função que usa o valor de `x`, sem passar `x`
 como parâmetro. Esta função vai somar todos os elementos de `x`:
 
-```julia-repl
+```julia
 julia> function f()
           s = 0
           for val in x
