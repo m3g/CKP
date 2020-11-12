@@ -9,7 +9,7 @@ Random.seed!(321)
 p = [ 12*rand(2) for i in 1:10 ]
 ```
 
-## Vetor first_atom: 
+## Vetor `first_atom`: 
 
 ```julia
  first_atom[1,1] = 10
@@ -29,8 +29,10 @@ p = [ 12*rand(2) for i in 1:10 ]
  first_atom[4,3] = 0
  first_atom[4,4] = 0
 
+```
 
-## Vetor next_atom: 
+
+## Vetor `next_atom`: 
 
 ```julia
  next_atom[1] = 0
