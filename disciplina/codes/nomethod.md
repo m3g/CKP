@@ -71,7 +71,7 @@ especificamente, que o programa não chame a função `g` com um argumento
 que não é um número. Se fizermos isso, vamos receber a mensagem de erro 
 de método:
 
-```
+```julia
 julia> x = [1,2]
 2-element Array{Int64,1}:
  1
@@ -92,6 +92,19 @@ ocorrendo, e verifique o tipo de variável que está sendo fornecida como
 parâmetro de entrada, e o tipo de variável que deveria estar sendo
 passado. De fato, estas duas informações são o que a mensagem de erro
 mostra (acima). 
+
+Também vamos ter o mesmo tipo de erro se tentarmos chamar a função com um
+conjunto de variáveis diferente do esperado. As funções acima esperam
+receber uma única variável como argumento. Se chamarmos uma delas
+com dois argumentos, o mesmo tipo de erro aparece, porque não há um 
+método definido para `g` que espera duas variáveis:
+
+```julia
+julia> g(2,3)
+ERROR: MethodError: no method matching g(::Int64, ::Int64)
+
+```
+
 
 A vantagem, neste caso, de definir uma função especializada para
 números, é que a mensagem de erro seria menos clara se deixássemos
