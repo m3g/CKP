@@ -38,7 +38,7 @@ O comando `export f` faz com que a função possa ser usada diretamente,
 como `f(1)`, em lugar de `MyModule.f(1)`. Exportar ou não as funções é
 opcional. 
 
-Agora inicie o Julia, e carregue seu módulo com os seguintes comandos
+- Agora inicie o Julia, e carregue seu módulo com os seguintes comandos
 (você também pode colocar estes comandos em uma arquivo simples `.jl` e
 carregar ele com `julia -i arquivo.jl`):
 
@@ -65,7 +65,7 @@ julia> f(1)
 2
 ```
 
-Agora modifico o arquivo `f.jl` fazendo com que a função multiplique
+Se modifico o arquivo `f.jl` fazendo com que a função multiplique
 o valor de `x` por 5 (e salvo, claro):
 
 ```julia
