@@ -4,7 +4,7 @@ using BenchmarkTools
 import Random
 Random.seed!(321)
 
-# Include function that computes the maximum distance
+# Include function that computes the minimum distance
 include("./mindist.jl")
 
 # Function that computes the minimum distance, with a naive algorithm
