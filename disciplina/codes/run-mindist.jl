@@ -2,7 +2,7 @@ using Test
 using BenchmarkTools
 
 # Include function that generates the initial point
-include("./initial_point.jl")
+include("./initial-point.jl")
 
 # Include function that computes the minimum distance
 include("./mindist.jl")
