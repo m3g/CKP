@@ -1,8 +1,8 @@
 using Test
 using BenchmarkTools
 
-import Random
-Random.seed!(321)
+# Include function that generates the initial point
+include("./initial_point.jl")
 
 # Include function that computes the minimum distance
 include("./mindist.jl")
@@ -33,9 +33,10 @@ function celllist(p,side,cutoff)
 end
 
 # Positions of 10,000 particles, with side 100. and cutoff 10.
-side = 1000.
+# initial point guarantees that no atom pair is closer than 0.9Å 
+side = 100.
 cutoff = 10.
-p = [ side*rand(2) for i in 1:10_000 ]
+p = initial_point(10_000,side,0.9)
 
 # Compute the cell of each particle
 cellparticles = celllist(p,side,cutoff)
