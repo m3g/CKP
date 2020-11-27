@@ -23,7 +23,10 @@ include("./initial_point.jl")
 p = initial_point(10_000,100,0.9)
 ```
 Neste caso, geraremos 10 mil pontos em uma rede quadrada de lado 100,
-garantindo que a distância entre eles não seja menor que 0.9. 
+garantindo que a distância entre eles não seja menor que 0.9. Tomamos o
+cuidado de gerar os pontos de forma que, quando usemos condições
+periódicas de contorno, ainda assim não haja sobreposições (por isso a
+distância entre os pontos não pode ser 1.0).
 
 Os pontos gerados podem ser desenhados em um gráfico, convertendo as
 coordenadas em vetores:
@@ -38,6 +41,7 @@ scatter(x,y,label="",lims=(-5,105),
 ```
 
 Resultando em:
+
 <img src="./initial_point.png">
 
 ## Novidades do código
@@ -89,9 +93,8 @@ search: initial_point
 
   initial_point(N,side,tol;seed=123)
 
-  Generates a grid of N particles in a square of side side, with
-  perturbed coordinates but
-  which satisfy a minimum distance greater than tol 
+  Generates a grid of N particles in a square of side side, with perturbed 
+  coordinates but which satisfy a minimum distance greater than tol 
 
   N: number of particles.
 
